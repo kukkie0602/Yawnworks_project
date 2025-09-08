@@ -15,18 +15,25 @@ MonoBehaviour:
   songClip: {fileID: 8300000, guid: 56e99760fccad0241b9834257abed9bf, type: 3}
   AditionalInfo: 
   notes:
+  - timestamp: 0
+    noteType: 0
   - timestamp: 2
-    noteType: 1
-    holdDuration: 0
-  - timestamp: 3
     noteType: 0
-    holdDuration: 0
   - timestamp: 4
-    noteType: 5
-    holdDuration: 1
-  - timestamp: 5
     noteType: 0
-    holdDuration: 0
   - timestamp: 6
-    noteType: 2
-    holdDuration: 0
+    noteType: 0
+  - timestamp: 8
+    noteType: 0
+  - timestamp: 16
+    noteType: 0
+  - timestamp: 18
+    noteType: 0
+  - timestamp: 20
+    noteType: 0
+  - timestamp: 22
+    noteType: 0
+  - timestamp: 28
+    noteType: 0
+  - timestamp: 30
+    noteType: 0
