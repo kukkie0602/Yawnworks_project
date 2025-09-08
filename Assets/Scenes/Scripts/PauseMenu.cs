@@ -15,7 +15,6 @@ public class PauseMenu : MonoBehaviour
     public AudioMixer mainMixer;
     public AudioSource musicSource;
 
-    public NoteSpawner noteSpawner;
 
     private bool isPaused = false;
 
@@ -37,8 +36,6 @@ public class PauseMenu : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        if (noteSpawner != null) noteSpawner.OnGamePaused();
-
         musicSource.Pause();
     }
 
@@ -48,9 +45,9 @@ public class PauseMenu : MonoBehaviour
         pauseMenuPanel.SetActive(false);
         scoreText.SetActive(true);
         pauseMenuButton.SetActive(true);
+
         Time.timeScale = 1f;
 
-        if (noteSpawner != null) noteSpawner.OnGameResumed();
 
         musicSource.UnPause();
     }

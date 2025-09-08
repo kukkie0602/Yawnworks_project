@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 416281660968618717}
   - component: {fileID: 7957717265617528670}
   - component: {fileID: 5385114351032902352}
-  - component: {fileID: 2931738889111427033}
-  - component: {fileID: -6887835601060740838}
+  - component: {fileID: 1268780185750949717}
   m_Layer: 0
-  m_Name: Note
+  m_Name: TapNote
   m_TagString: Note
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,7 +123,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -138,7 +137,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6928378579053156205}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -157,7 +156,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &2931738889111427033
+--- !u!114 &1268780185750949717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -166,23 +165,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6928378579053156205}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a4801723ca1b824ebcbc386f3d32b01, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.VisualScripting.Core::Unity.VisualScripting.Variables
-  _data:
-    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
-    _objectReferences: []
---- !u!114 &-6887835601060740838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6928378579053156205}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac0732fa45867fc468a9115384570012, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NoteController
-  noteType: 0
-  speed: 5
+  m_EditorClassIdentifier: Assembly-CSharp::TimingIndicator
+  speed: 10

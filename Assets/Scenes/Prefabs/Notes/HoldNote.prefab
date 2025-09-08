@@ -189,9 +189,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8318948124567133731}
-  - component: {fileID: 7035608146912787206}
   - component: {fileID: 3619308525750179151}
   - component: {fileID: 4299177390988042749}
+  - component: {fileID: 401016129403981664}
   m_Layer: 0
   m_Name: HoldNote
   m_TagString: Note
@@ -217,24 +217,6 @@ Transform:
   - {fileID: 1161458405298913604}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7035608146912787206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7150559189909356113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ac0732fa45867fc468a9115384570012, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NoteController
-  noteType: 5
-  speed: 5
-  holdDuration: 1
-  head: {fileID: 6276266514845293175}
-  trail: {fileID: 5126051623176057001}
-  endCap: {fileID: 7714792207955761566}
 --- !u!50 &3619308525750179151
 Rigidbody2D:
   serializedVersion: 5
@@ -299,6 +281,19 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
+--- !u!114 &401016129403981664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7150559189909356113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4801723ca1b824ebcbc386f3d32b01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimingIndicator
+  speed: 10
 --- !u!1 &8369040250665237205
 GameObject:
   m_ObjectHideFlags: 0

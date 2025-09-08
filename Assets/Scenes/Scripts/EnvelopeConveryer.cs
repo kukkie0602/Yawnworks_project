@@ -4,33 +4,38 @@ using System.Collections.Generic;
 
 public class EnvelopeConveyor : MonoBehaviour
 {
-    [Header("Level Data")]
     public BeatmapData currentBeatmap;
 
-    [Header("Conveyor Setup")]
     public Transform[] envelopePositions;
     public float moveDuration = 0.2f;
+    public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
 
-    [Tooltip("The prefab for an envelope after it has been successfully stamped.")]
-    public GameObject stampedEnvelopePrefab;
+    public TimingIndicatorSpawner indicatorSpawner;
+    public Transform targetIndicatorTransform;
 
-    [Header("Game References")]
-    public ScoreManager scoreManager;
     public AudioSource audioSource;
 
-    private Dictionary<NoteType, GameObject> notePrefabDict;
+    private Dictionary<NoteType, GameObject> envelopePrefabDict;
+    private Dictionary<NoteType, GameObject> indicatorPrefabDict;
     private List<GameObject> activeEnvelopes = new List<GameObject>();
+
     private int beatmapIndex = 0;
+    private int conveyorMoveIndex = 0;
+    private int indicatorSpawnIndex = 0;
+
+    private float indicatorTravelTime;
     private float songStartTime;
     private bool songStarted = false;
 
     void Awake()
     {
-        notePrefabDict = new Dictionary<NoteType, GameObject>();
+        envelopePrefabDict = new Dictionary<NoteType, GameObject>();
+        indicatorPrefabDict = new Dictionary<NoteType, GameObject>();
         foreach (var mapping in noteMappings)
         {
-            notePrefabDict[mapping.noteType] = mapping.prefab;
+            envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
+            indicatorPrefabDict[mapping.noteType] = mapping.indicatorPrefab;
         }
     }
 
@@ -38,110 +43,102 @@ public class EnvelopeConveyor : MonoBehaviour
     {
         if (currentBeatmap == null)
         {
-            Debug.LogError("No Beatmap Loaded!");
+            Debug.LogError("No Beatmap Loaded! Assign one in the Inspector or select it from the menu.");
             return;
         }
+
+        CalculateIndicatorTravelTime();
 
         audioSource.clip = currentBeatmap.songClip;
         audioSource.Play();
         songStartTime = Time.time;
-        songStarted = true;
 
         InitializeConveyor();
+        songStarted = true;
+    }
+
+    void Update()
+    {
+        if (!songStarted) return;
+
+        float songPosition = Time.time - songStartTime;
+
+        SpawnTimingIndicators(songPosition);
+
+        if (conveyorMoveIndex < currentBeatmap.notes.Length)
+        {
+            if (songPosition >= currentBeatmap.notes[conveyorMoveIndex].timestamp)
+            {
+                AdvanceConveyor();
+                conveyorMoveIndex++;
+            }
+        }
+    }
+
+    public void ProcessSuccessfulAction(GameObject envelope)
+    {
+        StampEnvelope(envelope);
+    }
+
+    public Envelope GetCenterEnvelope()
+    {
+        if (activeEnvelopes.Count > 4 && activeEnvelopes[4] != null)
+        {
+            return activeEnvelopes[4].GetComponent<Envelope>();
+        }
+        return null;
     }
 
     void InitializeConveyor()
     {
         for (int i = 0; i < envelopePositions.Length; i++)
         {
-            GameObject prefabToSpawn;
-            NoteData noteDataForThisSlot = null;
-
             if (i >= 5)
             {
-                prefabToSpawn = stampedEnvelopePrefab;
+                if (stampedEnvelopePrefab != null)
+                {
+                    GameObject stampedEnv = Instantiate(stampedEnvelopePrefab, envelopePositions[i].position, Quaternion.identity);
+                    activeEnvelopes.Add(stampedEnv);
+                }
             }
             else
             {
-                if (beatmapIndex < currentBeatmap.notes.Length)
-                {
-                    noteDataForThisSlot = currentBeatmap.notes[beatmapIndex];
-                    notePrefabDict.TryGetValue(noteDataForThisSlot.noteType, out prefabToSpawn);
-                    beatmapIndex++;
-                }
-                else
-                {
-                    prefabToSpawn = stampedEnvelopePrefab;
-                }
-            }
-
-            if (prefabToSpawn != null)
-            {
-                GameObject newEnvelope = Instantiate(prefabToSpawn, envelopePositions[i].position, Quaternion.identity);
-                if (noteDataForThisSlot != null)
-                {
-                    newEnvelope.GetComponent<Envelope>().noteType = noteDataForThisSlot.noteType;
-                }
-                activeEnvelopes.Add(newEnvelope);
-            }
-        }
-    }
-
-    void Update()
-    {
-        if (!songStarted || scoreManager == null) return;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (activeEnvelopes.Count > 4)
-            {
-                GameObject centerEnvelope = activeEnvelopes[4];
-                if (centerEnvelope != null)
-                {
-                    Envelope env = centerEnvelope.GetComponent<Envelope>();
-
-                    if (env.noteType == NoteType.Tap)
-                    {
-                        Debug.Log("Correctly Tapped Envelope!");
-                        scoreManager.IncreaseScore();
-                        
-                        StampEnvelope(centerEnvelope);
-
-                        Invoke("AdvanceConveyor", 0.1f);
-                    }
-                }
+                SpawnNewEnvelope(i);
             }
         }
     }
 
     void StampEnvelope(GameObject envelopeToStamp)
     {
+        if (stampedEnvelopePrefab == null) return;
         int index = activeEnvelopes.IndexOf(envelopeToStamp);
+        if (index == -1) return;
         Vector3 position = envelopeToStamp.transform.position;
 
-        activeEnvelopes.Remove(envelopeToStamp);
+        activeEnvelopes.RemoveAt(index);
         Destroy(envelopeToStamp);
 
         GameObject stampedVersion = Instantiate(stampedEnvelopePrefab, position, Quaternion.identity);
-
         activeEnvelopes.Insert(index, stampedVersion);
     }
 
     public void AdvanceConveyor()
     {
-        if (activeEnvelopes.Count > 8)
+        if (activeEnvelopes.Count > 8 && activeEnvelopes[8] != null)
         {
-            GameObject envelopeToEnd = activeEnvelopes[8];
-            Destroy(envelopeToEnd);
-            activeEnvelopes.RemoveAt(8);
+            Destroy(activeEnvelopes[8]);
         }
+        activeEnvelopes.RemoveAt(8);
 
         for (int i = activeEnvelopes.Count - 1; i >= 0; i--)
         {
-            int newPositionIndex = i + 1;
-            if (newPositionIndex < envelopePositions.Length)
+            if (activeEnvelopes[i] != null)
             {
-                StartCoroutine(MoveEnvelope(activeEnvelopes[i], envelopePositions[newPositionIndex].position));
+                int newPositionIndex = i + 1;
+                if (newPositionIndex < envelopePositions.Length)
+                {
+                    StartCoroutine(MoveEnvelope(activeEnvelopes[i], envelopePositions[newPositionIndex].position));
+                }
             }
         }
 
@@ -150,16 +147,52 @@ public class EnvelopeConveyor : MonoBehaviour
 
     void SpawnNewEnvelope(int positionIndex)
     {
-        if (beatmapIndex >= currentBeatmap.notes.Length) return;
-
-        NoteData noteData = currentBeatmap.notes[beatmapIndex];
-
-        if (notePrefabDict.TryGetValue(noteData.noteType, out GameObject prefab))
+        if (beatmapIndex < currentBeatmap.notes.Length)
         {
-            GameObject newEnvelope = Instantiate(prefab, envelopePositions[positionIndex].position, Quaternion.identity);
-            newEnvelope.GetComponent<Envelope>().noteType = noteData.noteType;
-            activeEnvelopes.Insert(positionIndex, newEnvelope);
+            NoteData noteData = currentBeatmap.notes[beatmapIndex];
+            if (envelopePrefabDict.TryGetValue(noteData.noteType, out GameObject prefab))
+            {
+                GameObject newEnvelope = Instantiate(prefab, envelopePositions[positionIndex].position, Quaternion.identity);
+                newEnvelope.GetComponent<Envelope>().noteType = noteData.noteType;
+                activeEnvelopes.Insert(positionIndex, newEnvelope);
+            }
             beatmapIndex++;
+        }
+        else
+        {
+            activeEnvelopes.Insert(positionIndex, null);
+        }
+    }
+
+    void SpawnTimingIndicators(float songPosition)
+    {
+        if (indicatorSpawnIndex < currentBeatmap.notes.Length)
+        {
+            NoteData nextIndicatorNote = currentBeatmap.notes[indicatorSpawnIndex];
+            float spawnTime = nextIndicatorNote.timestamp - indicatorTravelTime;
+            if (songPosition >= spawnTime)
+            {
+                if (indicatorSpawner != null && indicatorPrefabDict.TryGetValue(nextIndicatorNote.noteType, out GameObject prefabToSpawn))
+                {
+                    indicatorSpawner.SpawnIndicator(prefabToSpawn);
+                }
+                indicatorSpawnIndex++;
+            }
+        }
+    }
+
+    void CalculateIndicatorTravelTime()
+    {
+        if (indicatorSpawner == null || targetIndicatorTransform == null) return;
+        if (indicatorPrefabDict.TryGetValue(NoteType.Tap, out GameObject sampleIndicatorPrefab))
+        {
+            TimingIndicator indicatorScript = sampleIndicatorPrefab.GetComponent<TimingIndicator>();
+            if (indicatorScript != null)
+            {
+                float distance = Mathf.Abs(targetIndicatorTransform.position.x - indicatorSpawner.transform.position.x);
+                float speed = indicatorScript.speed;
+                if (speed > 0) indicatorTravelTime = distance / speed;
+            }
         }
     }
 
@@ -167,13 +200,13 @@ public class EnvelopeConveyor : MonoBehaviour
     {
         float time = 0;
         Vector3 startPosition = envelope.transform.position;
-
         while (time < moveDuration)
         {
+            if (envelope == null) yield break;
             envelope.transform.position = Vector3.Lerp(startPosition, targetPosition, time / moveDuration);
             time += Time.deltaTime;
             yield return null;
         }
-        envelope.transform.position = targetPosition;
+        if (envelope != null) envelope.transform.position = targetPosition;
     }
 }
