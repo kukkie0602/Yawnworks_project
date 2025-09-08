@@ -23,17 +23,20 @@ public class NoteSpawner : MonoBehaviour
     public AudioSource audioSource;
     public GameObject endGamePanel;
     public GameObject scoreText;
+    public Transform targetCircleTransform;
 
     [Header("Timing Configuration")]
-    public float noteTravelTime = 2.922f;
-    public float countdownTime = 3.1f;
+    public float countdownTime = 3f;
 
     private Dictionary<NoteType, GameObject> notePrefabDict;
+
+    private float noteTravelTime;
 
     private int timestampIndex = 0;
     private double songStartTimeDSP;
     private double pauseStartedTimeDSP = 0;
     private bool songFinished = false;
+    private float holdDuration = 1f;
 
     void Awake()
     {
@@ -46,6 +49,27 @@ public class NoteSpawner : MonoBehaviour
 
     void Start()
     {
+        if (targetCircleTransform == null)
+        {
+            Debug.LogError("Target Circle Transform is not assigned in the NoteSpawner!");
+            return;
+        }
+
+        if (noteMappings == null || noteMappings.Length == 0)
+        {
+            Debug.LogError("No Note Mappings assigned in the NoteSpawner!");
+            return;
+        }
+
+        NoteController sampleNoteController = noteMappings[0].prefab.GetComponent<NoteController>();
+        float speedFromPrefab = sampleNoteController.speed;
+
+        float distance = Mathf.Abs(targetCircleTransform.position.x - transform.position.x);
+
+        noteTravelTime = distance / Mathf.Abs(speedFromPrefab);
+
+        Debug.Log("Detected note speed of " + speedFromPrefab + ". Calculated Note Travel Time: " + noteTravelTime + " seconds.");
+
         if (currentBeatmap == null)
         {
             Debug.LogError("No BeatmapData assigned!");
@@ -93,7 +117,7 @@ public class NoteSpawner : MonoBehaviour
             
             if (noteController != null && data.noteType == NoteType.Hold)
             {
-                noteController.holdDuration = data.holdDuration;
+                noteController.holdDuration = holdDuration;
             }
         }
         else
