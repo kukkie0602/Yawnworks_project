@@ -14,6 +14,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public GameObject endGamePanel;
     public TimingIndicatorSpawner indicatorSpawner;
     public Transform targetIndicatorTransform;
+    public GameObject pauseMenuButton;
 
     public AudioSource audioSource;
 
@@ -109,6 +110,7 @@ public class EnvelopeConveyor : MonoBehaviour
         if (endGamePanel != null)
         {
             endGamePanel.SetActive(true);
+            pauseMenuButton.SetActive(false);
         }
         songStarted = false;
     }
@@ -147,8 +149,7 @@ public class EnvelopeConveyor : MonoBehaviour
             }
         }
     }
-
-    // ? Now just marks the envelope for later swap
+  
     void StampEnvelope(GameObject envelopeToStamp)
     {
         Envelope env = envelopeToStamp.GetComponent<Envelope>();
@@ -178,7 +179,6 @@ public class EnvelopeConveyor : MonoBehaviour
             }
         }
 
-        // ? do swaps after move duration
         StartCoroutine(SwapStampedAfterMove());
 
         SpawnNewEnvelope(0);
