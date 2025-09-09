@@ -11,6 +11,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
 
+    public GameObject endGamePanel;
     public TimingIndicatorSpawner indicatorSpawner;
     public Transform targetIndicatorTransform;
 
@@ -27,6 +28,9 @@ public class EnvelopeConveyor : MonoBehaviour
     private float indicatorTravelTime;
     private float songStartTime;
     private bool songStarted = false;
+
+    private bool endGameSequenceStarted = false;
+
 
     void Awake()
     {
@@ -47,6 +51,11 @@ public class EnvelopeConveyor : MonoBehaviour
             return;
         }
 
+        if (endGamePanel != null)
+        {
+            endGamePanel.SetActive(false);
+        }
+
         CalculateIndicatorTravelTime();
 
         audioSource.clip = currentBeatmap.songClip;
@@ -55,6 +64,7 @@ public class EnvelopeConveyor : MonoBehaviour
 
         InitializeConveyor();
         songStarted = true;
+
     }
 
     void Update()
@@ -73,6 +83,32 @@ public class EnvelopeConveyor : MonoBehaviour
                 conveyorMoveIndex++;
             }
         }
+
+        if (!endGameSequenceStarted && currentBeatmap.notes.Length > 0)
+        {
+            float lastNoteTimestamp = currentBeatmap.notes[currentBeatmap.notes.Length - 1].timestamp;
+
+            if (songPosition >= lastNoteTimestamp)
+            {
+                endGameSequenceStarted = true;
+
+                Debug.Log("Last note time has passed. Starting 5-second end-game timer.");
+                StartCoroutine(EndGameCoroutine());
+            }
+        }
+    }
+
+    IEnumerator EndGameCoroutine()
+    {
+        audioSource.Stop();
+        yield return new WaitForSeconds(5f);
+
+        Debug.Log("Level complete! Showing end screen.");
+        if (endGamePanel != null)
+        {
+            endGamePanel.SetActive(true);
+        }
+        songStarted = false;
     }
 
     public void ProcessSuccessfulAction(GameObject envelope)
