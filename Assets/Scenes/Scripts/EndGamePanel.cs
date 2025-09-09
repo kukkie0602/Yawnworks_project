@@ -5,7 +5,7 @@ public class EndGamePanel : MonoBehaviour
 {
     public void GoToMainMenu()
     {
-        SceneManager.LoadScene("MainMenuScreen");
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void QuitGame()

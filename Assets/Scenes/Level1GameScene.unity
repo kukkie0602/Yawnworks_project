@@ -618,6 +618,7 @@ MonoBehaviour:
   endGamePanel: {fileID: 652969071}
   indicatorSpawner: {fileID: 689335155}
   targetIndicatorTransform: {fileID: 92812696}
+  pauseMenuButton: {fileID: 1252520128}
   audioSource: {fileID: 1041615260}
 --- !u!4 &303166197
 Transform:
