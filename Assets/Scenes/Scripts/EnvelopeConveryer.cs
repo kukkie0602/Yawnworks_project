@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class EnvelopeConveyor : MonoBehaviour
 {
     public BeatmapData currentBeatmap;
-
+    public float hitWindow = 0.15f;
     public Transform[] envelopePositions;
     public float moveDuration = 0.2f;
     public GameObject stampedEnvelopePrefab;
@@ -67,7 +67,9 @@ public class EnvelopeConveyor : MonoBehaviour
 
         if (conveyorMoveIndex < currentBeatmap.notes.Length)
         {
-            if (songPosition >= currentBeatmap.notes[conveyorMoveIndex].timestamp)
+            float noteLeaveTime = currentBeatmap.notes[conveyorMoveIndex].timestamp + hitWindow;
+
+            if (songPosition >= noteLeaveTime)
             {
                 AdvanceConveyor();
                 conveyorMoveIndex++;
@@ -78,6 +80,8 @@ public class EnvelopeConveyor : MonoBehaviour
     public void ProcessSuccessfulAction(GameObject envelope)
     {
         StampEnvelope(envelope);
+        AdvanceConveyor();
+        conveyorMoveIndex++;
     }
 
     public Envelope GetCenterEnvelope()
@@ -108,18 +112,14 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
+    // ? Now just marks the envelope for later swap
     void StampEnvelope(GameObject envelopeToStamp)
     {
-        if (stampedEnvelopePrefab == null) return;
-        int index = activeEnvelopes.IndexOf(envelopeToStamp);
-        if (index == -1) return;
-        Vector3 position = envelopeToStamp.transform.position;
-
-        activeEnvelopes.RemoveAt(index);
-        Destroy(envelopeToStamp);
-
-        GameObject stampedVersion = Instantiate(stampedEnvelopePrefab, position, Quaternion.identity);
-        activeEnvelopes.Insert(index, stampedVersion);
+        Envelope env = envelopeToStamp.GetComponent<Envelope>();
+        if (env != null)
+        {
+            env.needsStampSwap = true;
+        }
     }
 
     public void AdvanceConveyor()
@@ -128,7 +128,7 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             Destroy(activeEnvelopes[8]);
         }
-        activeEnvelopes.RemoveAt(8);
+        if (activeEnvelopes.Count > 8) activeEnvelopes.RemoveAt(8);
 
         for (int i = activeEnvelopes.Count - 1; i >= 0; i--)
         {
@@ -142,7 +142,31 @@ public class EnvelopeConveyor : MonoBehaviour
             }
         }
 
+        // ? do swaps after move duration
+        StartCoroutine(SwapStampedAfterMove());
+
         SpawnNewEnvelope(0);
+    }
+
+    IEnumerator SwapStampedAfterMove()
+    {
+        yield return new WaitForSeconds(moveDuration);
+
+        for (int i = 0; i < activeEnvelopes.Count; i++)
+        {
+            if (activeEnvelopes[i] == null) continue;
+
+            Envelope env = activeEnvelopes[i].GetComponent<Envelope>();
+            if (env != null && env.needsStampSwap)
+            {
+                Vector3 pos = activeEnvelopes[i].transform.position;
+                Quaternion rot = activeEnvelopes[i].transform.rotation;
+
+                Destroy(activeEnvelopes[i]);
+                GameObject stamped = Instantiate(stampedEnvelopePrefab, pos, rot);
+                activeEnvelopes[i] = stamped;
+            }
+        }
     }
 
     void SpawnNewEnvelope(int positionIndex)

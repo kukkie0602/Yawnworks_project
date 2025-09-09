@@ -15,7 +15,7 @@ MonoBehaviour:
   songClip: {fileID: 8300000, guid: 56e99760fccad0241b9834257abed9bf, type: 3}
   AditionalInfo: 
   notes:
-  - timestamp: 0
+  - timestamp: 1
     noteType: 0
   - timestamp: 2
     noteType: 0
