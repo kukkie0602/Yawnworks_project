@@ -595,7 +595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeConveyor
   currentBeatmap: {fileID: 11400000, guid: 61e94be407441f947af51a951dc45ff3, type: 2}
-  hitWindow: 0.15
+  hitWindow: 0.2
   envelopePositions:
   - {fileID: 1143249102}
   - {fileID: 1370890413}
@@ -3371,6 +3371,14 @@ PrefabInstance:
       propertyPath: scoreManager
       value: 
       objectReference: {fileID: 695369576}
+    - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

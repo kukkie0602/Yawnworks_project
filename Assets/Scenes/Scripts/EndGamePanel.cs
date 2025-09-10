@@ -14,5 +14,4 @@ public class EndGamePanel : MonoBehaviour
 
         Application.Quit();
     }
-    //test
 }
