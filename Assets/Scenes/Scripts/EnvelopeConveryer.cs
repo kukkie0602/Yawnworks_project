@@ -48,7 +48,7 @@ public class EnvelopeConveyor : MonoBehaviour
     {
         if (currentBeatmap == null)
         {
-            Debug.LogError("No Beatmap Loaded! Assign one in the Inspector or select it from the menu.");
+            Debug.LogError("No Beatmap Loaded! Assign one in the Inspector.");
             return;
         }
 
