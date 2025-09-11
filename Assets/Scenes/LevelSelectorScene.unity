@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &140450309 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6370383800727395682, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+  m_PrefabInstance: {fileID: 1034012570701951086}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!224 &250455145 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8021376074285499278, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
@@ -789,6 +800,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelButton_Postoffice
       objectReference: {fileID: 0}
+    - target: {fileID: 1188534034277768595, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+      propertyPath: highScoreText
+      value: 
+      objectReference: {fileID: 140450309}
+    - target: {fileID: 1188534034277768595, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+      propertyPath: difficultyText
+      value: 
+      objectReference: {fileID: 1034012570701951087}
+    - target: {fileID: 2666882626774707817, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7510484477936661707, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7739957156954363846, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -878,6 +905,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+--- !u!114 &1034012570701951087 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2666882626774707817, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+  m_PrefabInstance: {fileID: 1034012570701951086}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &8557260759668401856
 PrefabInstance:
   m_ObjectHideFlags: 0

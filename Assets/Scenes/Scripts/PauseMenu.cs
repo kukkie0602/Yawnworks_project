@@ -16,8 +16,19 @@ public class PauseMenu : MonoBehaviour
     public AudioMixer mainMixer;
     public AudioSource musicSource;
 
-
     private bool isPaused = false;
+    private SettingsData settingsData;
+
+    void Start()
+    {
+        settingsData = SaveSystem.LoadSettings();
+
+        mainMixer.SetFloat("MusicVolume", Mathf.Log10(settingsData.musicVolume) * 20);
+        if (volumeSlider != null)
+        {
+            volumeSlider.value = settingsData.musicVolume;
+        }
+    }
 
     void Update()
     {
@@ -58,6 +69,10 @@ public class PauseMenu : MonoBehaviour
     public void SetVolume(float volume)
     {
         mainMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
+
+        settingsData.musicVolume = volume;
+
+        SaveSystem.SaveSettings(settingsData);
     }
 
     public void QuitToMainMenu()
