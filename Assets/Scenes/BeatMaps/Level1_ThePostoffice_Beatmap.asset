@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BeatmapData
   songClip: {fileID: 8300000, guid: f85f086e5f4d2ab48bf7f3f8bd920acf, type: 3}
   levelName: The Postoffice
-  difficulty: 3
+  difficulty: 0
   notes:
   - timestamp: 2
     noteType: 0
