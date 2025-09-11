@@ -1,6 +1,7 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnvelopeConveyor : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public TimingIndicatorSpawner indicatorSpawner;
     public Transform targetIndicatorTransform;
     public GameObject pauseMenuButton;
+    public ScoreManager scoreManager;
 
     public AudioSource audioSource;
 
@@ -99,6 +101,12 @@ public class EnvelopeConveyor : MonoBehaviour
     IEnumerator EndGameCoroutine()
     {
         audioSource.Stop();
+
+        if (scoreManager != null)
+        {
+            scoreManager.CheckForHighScore(currentBeatmap);
+        }
+
         yield return new WaitForSeconds(2f);
 
         Debug.Log("Level complete! Showing end screen.");

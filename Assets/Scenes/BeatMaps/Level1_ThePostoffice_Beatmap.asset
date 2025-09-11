@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3daa1e0a60d1e26479c290e497c89aa6, type: 3}
-  m_Name: Level1Generated
+  m_Name: Level1_ThePostoffice_Beatmap
   m_EditorClassIdentifier: Assembly-CSharp::BeatmapData
   songClip: {fileID: 8300000, guid: f85f086e5f4d2ab48bf7f3f8bd920acf, type: 3}
-  AditionalInfo: 
+  levelName: The Postoffice
+  difficulty: 3
   notes:
   - timestamp: 2
     noteType: 0

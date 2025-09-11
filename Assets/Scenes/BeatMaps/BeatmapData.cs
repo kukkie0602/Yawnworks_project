@@ -12,12 +12,22 @@ public class NoteData
     public NoteType noteType;
 }
 
+public enum Difficulty
+{
+    Easy,
+    Medium,
+    Hard,
+    Insane
+}
+
 [CreateAssetMenu(fileName = "NewBeatmap", menuName = "Rhythm Game/New Beatmap")]
 public class BeatmapData : ScriptableObject
 {
     [Header("Level Information")]
     public AudioClip songClip;
-    public string AditionalInfo;
+    public string levelName;
+
+    public Difficulty difficulty;
 
     [Header("Beatmap Data")]
     public NoteData[] notes;
