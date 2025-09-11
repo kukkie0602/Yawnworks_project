@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6755807107861261698}
   - component: {fileID: 44084425201899103}
   - component: {fileID: 5640856153934995903}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: UnstampedEnvelope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,3 +104,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Envelope
   noteType: 0
+  needsStampSwap: 0
