@@ -10,6 +10,7 @@ public class PauseMenu : MonoBehaviour
     public Slider volumeSlider;
     public GameObject pauseMenuButton;
     public GameObject scoreText;
+    public GameObject comboText;
 
     [Header("Audio")]
     public AudioMixer mainMixer;
@@ -32,6 +33,7 @@ public class PauseMenu : MonoBehaviour
         isPaused = true;
         pauseMenuPanel.SetActive(true);
         scoreText.SetActive(false);
+        comboText.SetActive(false);
         pauseMenuButton.SetActive(false);
 
         Time.timeScale = 0f;
@@ -44,6 +46,7 @@ public class PauseMenu : MonoBehaviour
         isPaused = false;
         pauseMenuPanel.SetActive(false);
         scoreText.SetActive(true);
+        comboText.SetActive(true);
         pauseMenuButton.SetActive(true);
 
         Time.timeScale = 1f;

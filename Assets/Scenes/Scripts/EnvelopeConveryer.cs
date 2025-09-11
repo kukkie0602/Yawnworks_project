@@ -11,7 +11,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
 
-    public GameObject endGamePanel;
+    public EndGamePanel EndGamePanelManger;
     public TimingIndicatorSpawner indicatorSpawner;
     public Transform targetIndicatorTransform;
     public GameObject pauseMenuButton;
@@ -50,11 +50,6 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             Debug.LogError("No Beatmap Loaded! Assign one in the Inspector.");
             return;
-        }
-
-        if (endGamePanel != null)
-        {
-            endGamePanel.SetActive(false);
         }
 
         CalculateIndicatorTravelTime();
@@ -104,12 +99,12 @@ public class EnvelopeConveyor : MonoBehaviour
     IEnumerator EndGameCoroutine()
     {
         audioSource.Stop();
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2f);
 
         Debug.Log("Level complete! Showing end screen.");
-        if (endGamePanel != null)
+        if (EndGamePanelManger.endGamePanel != null)
         {
-            endGamePanel.SetActive(true);
+            EndGamePanelManger.End();
             pauseMenuButton.SetActive(false);
         }
         songStarted = false;

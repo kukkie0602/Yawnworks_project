@@ -1,22 +1,94 @@
 using UnityEngine;
-using TMPro; // Only needed for TextMeshPro
+using TMPro;
 
 public class ScoreManager : MonoBehaviour
 {
-    public int score = 0;
+    [Header("Scoring")]
+    public int pointsPerNote = 100;
+    private int currentScore = 0;
+    private int comboCount = 0;
+    private int maxCombo = 12;
 
-    public TMP_Text scoreText; // Use TMP_Text for TextMeshPro
+    [Header("UI Elements")]
+    public TMP_Text scoreText;
+    public TMP_Text comboText;
 
-    // Method called by the button
-    public void IncreaseScore()
+    void Start()
     {
-        score++;
-        scoreText.text = "Combo " + score + "x";
+        enableScoreDisplay();
+        ResetScore();
+    }
+
+    public void OnNoteHit()
+    {
+        if (comboCount < maxCombo)
+            comboCount++;
+
+        currentScore += pointsPerNote * comboCount;
+
+        UpdateDisplay();
+    }
+
+    public void OnNoteMiss()
+    {
+        comboCount = 0;
+        UpdateDisplay();
     }
 
     public void ResetScore()
     {
-        score = 0;
-        scoreText.text = "Combo " + score + "x";
+        currentScore = 0;
+        comboCount = 0;
+        UpdateDisplay();
+    }
+
+    private void UpdateDisplay()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "Score: " +  currentScore.ToString("D6");
+        }
+
+        if (comboText != null)
+        {
+            if (comboCount > 1)
+            {
+                comboText.gameObject.SetActive(true);
+                comboText.text = comboCount + "x Combo";
+            }
+            else
+            {
+                comboText.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public int GetCurrentScore()
+    {
+        return currentScore;
+    }
+
+    public void disableScoreDisplay()
+    {
+        if (scoreText != null)
+        {
+            scoreText.gameObject.SetActive(false);
+        }
+        if (comboText != null)
+        {
+            comboText.gameObject.SetActive(false);
+        }
+    }
+
+    public void enableScoreDisplay()
+    {
+        if (scoreText != null)
+        {
+            scoreText.gameObject.SetActive(true);
+        }
+        if (comboText != null)
+        {
+            comboText.gameObject.SetActive(true);
+        }
     }
 }

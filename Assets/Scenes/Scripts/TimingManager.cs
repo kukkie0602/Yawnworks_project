@@ -21,7 +21,7 @@ public class TimingManager : MonoBehaviour
                 if (centerEnvelope != null && centerEnvelope.noteType == NoteType.Tap)
                 {
                     Debug.Log("HIT!");
-                    scoreManager.IncreaseScore();
+                    scoreManager.OnNoteHit();
                     conveyor.ProcessSuccessfulAction(centerEnvelope.gameObject);
 
                     activeIndicators.Remove(indicatorToHit);
@@ -31,7 +31,7 @@ public class TimingManager : MonoBehaviour
             else
             {
                 Debug.Log("MISS! (Pressed too early)");
-                scoreManager.ResetScore();
+                scoreManager.OnNoteMiss();
             }
         }
     }
@@ -51,7 +51,7 @@ public class TimingManager : MonoBehaviour
         if (indicator != null && activeIndicators.Contains(indicator))
         {
             Debug.Log("MISS! (Pressed too late)");
-            scoreManager.ResetScore();
+            scoreManager.OnNoteMiss();
             activeIndicators.Remove(indicator);
         }
     }
