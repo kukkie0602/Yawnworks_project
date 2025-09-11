@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3290228015722515194}
   - component: {fileID: 2728802953551443207}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: StampedEnvelope
   m_TagString: Untagged
   m_Icon: {fileID: 0}
