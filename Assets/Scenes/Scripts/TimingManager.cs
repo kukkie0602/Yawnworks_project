@@ -6,7 +6,7 @@ public class TimingManager : MonoBehaviour
     [Header("Game References")]
     public EnvelopeConveyor conveyor;
     public ScoreManager scoreManager;
-
+    public Animator armsAnimator;
     private List<TimingIndicator> activeIndicators = new List<TimingIndicator>();
 
     void Update()
@@ -26,6 +26,10 @@ public class TimingManager : MonoBehaviour
 
                     activeIndicators.Remove(indicatorToHit);
                     Destroy(indicatorToHit.gameObject);
+                    if (armsAnimator != null)
+                    {
+                        armsAnimator.Play("ArmsAnimation", -1, 0f);
+                    }
                 }
             }
             else

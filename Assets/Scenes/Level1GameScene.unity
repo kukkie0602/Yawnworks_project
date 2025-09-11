@@ -2440,6 +2440,7 @@ GameObject:
   - component: {fileID: 1100402130}
   - component: {fileID: 1100402129}
   - component: {fileID: 1100402131}
+  - component: {fileID: 1100402132}
   m_Layer: 3
   m_Name: Arms
   m_TagString: Untagged
@@ -2526,6 +2527,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1100402132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100402127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e37f7eae7f941b64185f2cf45fbfd163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  armsAnimator: {fileID: 1100402131}
 --- !u!4 &1143249102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8710221653353220726, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
@@ -4347,6 +4361,10 @@ PrefabInstance:
       propertyPath: conveyor
       value: 
       objectReference: {fileID: 303166196}
+    - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
+      propertyPath: armsAnimator
+      value: 
+      objectReference: {fileID: 1100402131}
     - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: scoreManager
       value: 
