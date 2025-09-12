@@ -371,11 +371,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 62952005}
   m_CullTransparentMesh: 1
---- !u!4 &92812696 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-  m_PrefabInstance: {fileID: 1530042555114717878}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &127647411 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2797774691987249662, guid: 166b729385bc3e1409bf4574642676f1, type: 3}
@@ -791,8 +786,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a180303e7a3c5b84d9d605ff19353ad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeConveyor
-  currentBeatmap: {fileID: 11400000, guid: 61e94be407441f947af51a951dc45ff3, type: 2}
-  hitWindow: 0.2
+  levelData: {fileID: 11400000, guid: 9d698025b4cf8af48a6ec7bb01034d2e, type: 2}
+  armsController: {fileID: 1100402132}
   envelopePositions:
   - {fileID: 1143249102}
   - {fileID: 1370890413}
@@ -803,21 +798,16 @@ MonoBehaviour:
   - {fileID: 902065895}
   - {fileID: 677353333}
   - {fileID: 977278064}
-  moveDuration: 0.2
+  moveDuration: 0.4
   stampedEnvelopePrefab: {fileID: 3879698585123424553, guid: e6734ada3854fa945b959a7e9c7f2662, type: 3}
   noteMappings:
   - noteType: 0
     envelopePrefab: {fileID: 5391714462202279252, guid: dbca6626731097e4187000813d06ee98, type: 3}
     indicatorPrefab: {fileID: 6928378579053156205, guid: 7775c5288eb5518438b5cc92bea75cbf, type: 3}
   - noteType: 1
-    envelopePrefab: {fileID: 5391714462202279252, guid: dbca6626731097e4187000813d06ee98, type: 3}
-    indicatorPrefab: {fileID: 6928378579053156205, guid: d3714fb5c6eb501449f712aac2d89462, type: 3}
-  EndGamePanelManger: {fileID: 453313690}
-  indicatorSpawner: {fileID: 689335155}
-  targetIndicatorTransform: {fileID: 92812696}
-  pauseMenuButton: {fileID: 1252520128}
-  scoreManager: {fileID: 695369576}
-  audioSource: {fileID: 1041615260}
+    envelopePrefab: {fileID: 4140000429361478535, guid: 235516d8ff9f1774aa78a1e43d099eb3, type: 3}
+    indicatorPrefab: {fileID: 6928378579053156205, guid: 7775c5288eb5518438b5cc92bea75cbf, type: 3}
+  armsAnimator: {fileID: 1100402131}
 --- !u!4 &303166197
 Transform:
   m_ObjectHideFlags: 0
@@ -1819,17 +1809,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8737258648175458332, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
   m_PrefabInstance: {fileID: 1907159754}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &689335155 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3194265638424857639, guid: c60b8d7095298f74ea9f3ea10132f5d6, type: 3}
-  m_PrefabInstance: {fileID: 552799126}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ea89bc0d182d0542b19f0fc8b79dfc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimingIndicatorSpawner
 --- !u!1 &695369575
 GameObject:
   m_ObjectHideFlags: 0
@@ -2300,6 +2279,88 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3803408666095736666, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
   m_PrefabInstance: {fileID: 1907159754}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1023086587
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1023086590}
+  - component: {fileID: 1023086589}
+  - component: {fileID: 1023086588}
+  m_Layer: 0
+  m_Name: StampZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1023086588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023086587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2acd3f75c9ee51e40b3096740d13d414, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  armsController: {fileID: 1100402132}
+--- !u!58 &1023086589
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023086587}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
+--- !u!4 &1023086590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1023086587}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.07, y: -2.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1041615259
 GameObject:
   m_ObjectHideFlags: 0
@@ -4449,3 +4510,4 @@ SceneRoots:
   - {fileID: 453313689}
   - {fileID: 128311316}
   - {fileID: 936580024}
+  - {fileID: 1023086590}

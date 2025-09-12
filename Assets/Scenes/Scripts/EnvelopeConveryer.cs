@@ -1,292 +1,169 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class EnvelopeConveyor : MonoBehaviour
 {
-    public BeatmapData currentBeatmap;
-    public float hitWindow = 0.15f;
+    [Header("Level Data")]
+    public EnvelopeLevel levelData; // reference to ScriptableObject
+    [Header("UI References")]
+    public ArmsController armsController;
+    [Header("Prefabs & References")]
     public Transform[] envelopePositions;
-    public float moveDuration = 0.2f;
+    public float moveDuration = 0.1f;
     public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
-
-    public EndGamePanel EndGamePanelManger;
-    public TimingIndicatorSpawner indicatorSpawner;
-    public Transform targetIndicatorTransform;
-    public GameObject pauseMenuButton;
-    public ScoreManager scoreManager;
-
-    public AudioSource audioSource;
-
+    public Animator armsAnimator;
     private Dictionary<NoteType, GameObject> envelopePrefabDict;
-    private Dictionary<NoteType, GameObject> indicatorPrefabDict;
     private List<GameObject> activeEnvelopes = new List<GameObject>();
 
-    private int beatmapIndex = 0;
-    private int conveyorMoveIndex = 0;
-    private int indicatorSpawnIndex = 0;
-
-    private float indicatorTravelTime;
-    private float songStartTime;
-    private bool songStarted = false;
-
-    private bool endGameSequenceStarted = false;
-
-    private bool isMoving = false;
-
-
-    void Awake()
-    {
-        envelopePrefabDict = new Dictionary<NoteType, GameObject>();
-        indicatorPrefabDict = new Dictionary<NoteType, GameObject>();
-        foreach (var mapping in noteMappings)
-        {
-            envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
-            indicatorPrefabDict[mapping.noteType] = mapping.indicatorPrefab;
-        }
-    }
+    private int sequenceIndex = 0;
+    private bool isExamplePhase = true;
 
     void Start()
     {
-        if (currentBeatmap == null)
+        envelopePrefabDict = new Dictionary<NoteType, GameObject>();
+        foreach (var mapping in noteMappings)
+            envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
+
+        if (levelData == null || levelData.sequences.Length == 0)
         {
-            Debug.LogError("No Beatmap Loaded! Assign one in the Inspector.");
+            Debug.LogError("No level assigned or empty level data!");
             return;
         }
 
-        CalculateIndicatorTravelTime();
-
-        audioSource.clip = currentBeatmap.songClip;
-        audioSource.Play();
-        songStartTime = Time.time;
-
-        InitializeConveyor();
-        songStarted = true;
-
+        StartCoroutine(PlaySequenceCoroutine());
     }
 
-    void Update()
+    private IEnumerator TriggerArmsAfterDelay(GameObject envelope, float delay)
     {
-        if (!songStarted) return;
-
-        float songPosition = Time.time - songStartTime;
-
-        SpawnTimingIndicators(songPosition);
-
-        if (conveyorMoveIndex < currentBeatmap.notes.Length)
-        {
-            float noteLeaveTime = currentBeatmap.notes[conveyorMoveIndex].timestamp + hitWindow;
-
-            if (songPosition >= noteLeaveTime)
-            {
-                StartCoroutine(AdvanceConveyorCoroutine());
-                conveyorMoveIndex++;
-            }
-        }
-
-        if (!endGameSequenceStarted && currentBeatmap.notes.Length > 0)
-        {
-            float lastNoteTimestamp = currentBeatmap.notes[currentBeatmap.notes.Length - 1].timestamp;
-
-            if (songPosition >= lastNoteTimestamp)
-            {
-                endGameSequenceStarted = true;
-
-                Debug.Log("Last note time has passed. Starting 5-second end-game timer.");
-                StartCoroutine(EndGameCoroutine());
-            }
-        }
-    }
-
-    IEnumerator EndGameCoroutine()
-    {
-        audioSource.Stop();
-
-        if (scoreManager != null)
-        {
-            scoreManager.CheckForHighScore(currentBeatmap);
-        }
-
-        yield return new WaitForSeconds(2f);
-
-        Debug.Log("Level complete! Showing end screen.");
-        if (EndGamePanelManger.endGamePanel != null)
-        {
-            EndGamePanelManger.End();
-            pauseMenuButton.SetActive(false);
-        }
-        songStarted = false;
-    }
-
-    public void ProcessSuccessfulAction(GameObject envelope)
-    {
-        if (isMoving) return;
-
+        yield return new WaitForSeconds(delay);
         StampEnvelope(envelope);
-        StartCoroutine(AdvanceConveyorCoroutine());
-        conveyorMoveIndex++;
+    }
+
+    IEnumerator PlaySequenceCoroutine()
+    {
+        while (sequenceIndex < levelData.sequences.Length)
+        {
+            var seq = levelData.sequences[sequenceIndex];
+
+            // --- Example Phase ---
+            isExamplePhase = true;
+            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true));
+
+            // --- Player Phase ---
+            isExamplePhase = false;
+            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false));
+
+            sequenceIndex++;
+        }
+
+        Debug.Log("Level Complete!");
+    }
+
+    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
+    {
+        activeEnvelopes.Clear();
+
+        for (int i = 0; i < seq.pattern.Length; i++)
+        {
+            NoteType type = seq.pattern[i];
+
+            if (envelopePrefabDict.TryGetValue(type, out GameObject prefab))
+            {
+                // Spawn at the first conveyor position
+                GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
+                env.GetComponent<Envelope>().noteType = type;
+                activeEnvelopes.Add(env);
+
+                if (autoStamp)
+                {
+                    env.GetComponent<Envelope>().needsStampSwap = true;
+                }
+
+                // Move envelope along the conveyor positions
+                StartCoroutine(MoveEnvelopeAlongConveyor(env, i));
+            }
+
+            // Wait a bit before spawning the next envelope
+            yield return new WaitForSeconds(0.62f);
+        }
+
+        // Wait until envelopes are fully at the end positions
+        yield return new WaitForSeconds(moveDuration * envelopePositions.Length);
+    }
+
+    // Coroutine to move a single envelope along the conveyor
+    IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, int sequenceIndex)
+    {
+        for (int posIndex = 0; posIndex < envelopePositions.Length; posIndex++)
+        {
+            Vector3 startPos = envelope.transform.position;
+            Vector3 endPos = envelopePositions[posIndex].position;
+
+            float elapsed = 0f;
+            while (elapsed < moveDuration)
+            {
+                envelope.transform.position = Vector3.Lerp(startPos, endPos, elapsed / moveDuration);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            envelope.transform.position = endPos;
+        }
+
+        // Optionally destroy envelope after reaching end
+        Destroy(envelope);
+        activeEnvelopes.Remove(envelope);
+    }
+
+    void StampEnvelope(GameObject env)
+    {
+        Envelope e = env.GetComponent<Envelope>();
+        if (e != null && e.needsStampSwap)
+        {
+            e.needsStampSwap = false; 
+
+            if (armsController != null)
+            {
+                armsController.PlayArmsAnimation();
+            }
+        }
+    }
+
+    public void ProcessPlayerAction(NoteType inputType)
+    {
+        if (isExamplePhase) return; // Ignore input during example
+
+        Envelope current = GetCenterEnvelope();
+        if (current != null && current.noteType == inputType)
+        {
+            Debug.Log("Correct!");
+            StampEnvelope(current.gameObject);
+        }
+        else
+        {
+            Debug.Log("Wrong!");
+        }
     }
 
     public Envelope GetCenterEnvelope()
     {
-        if (activeEnvelopes.Count > 4 && activeEnvelopes[4] != null)
-        {
-            return activeEnvelopes[4].GetComponent<Envelope>();
-        }
-        return null;
+        return activeEnvelopes.Count > 0 ? activeEnvelopes[0].GetComponent<Envelope>() : null;
     }
 
-    void InitializeConveyor()
+    public void ProcessSuccessfulAction(GameObject envelope)
     {
-        for (int i = 0; i < 5; i++)
-        {
-            SpawnNewEnvelope(i, true);
-        }
-        for (int i = 5; i < envelopePositions.Length; i++)
-        {
-            if (stampedEnvelopePrefab != null)
-            {
-                GameObject stampedEnv = Instantiate(stampedEnvelopePrefab, envelopePositions[i].position, Quaternion.identity);
-                activeEnvelopes.Add(stampedEnv);
-            }
-            else
-            {
-                activeEnvelopes.Add(null);
-            }
-        }
-    }
+        // Stamp the envelope (visual feedback)
+        StampEnvelope(envelope);
 
-    void StampEnvelope(GameObject envelopeToStamp)
-    {
-        Envelope env = envelopeToStamp.GetComponent<Envelope>();
-        if (env != null)
+        // Optionally: remove it from active list
+        if (activeEnvelopes.Contains(envelope))
         {
-            env.needsStampSwap = true;
-        }
-    }
-
-    IEnumerator AdvanceConveyorCoroutine()
-    {
-        if (isMoving) yield break;
-        isMoving = true;
-
-        if (activeEnvelopes.Count > 8 && activeEnvelopes[8] != null)
-        {
-            Destroy(activeEnvelopes[8]);
-        }
-        if (activeEnvelopes.Count > 8) activeEnvelopes.RemoveAt(8);
-
-        for (int i = 0; i < activeEnvelopes.Count; i++)
-        {
-            if (activeEnvelopes[i] != null)
-            {
-                StartCoroutine(MoveEnvelope(activeEnvelopes[i], envelopePositions[i + 1].position));
-            }
+            activeEnvelopes.Remove(envelope);
         }
 
-        yield return new WaitForSeconds(moveDuration);
-
-        SpawnNewEnvelope(0);
-
-        for (int i = 0; i < activeEnvelopes.Count; i++)
-        {
-            if (activeEnvelopes[i] == null) continue;
-            Envelope env = activeEnvelopes[i].GetComponent<Envelope>();
-            if (env != null && env.needsStampSwap)
-            {
-                Vector3 pos = activeEnvelopes[i].transform.position;
-                Quaternion rot = activeEnvelopes[i].transform.rotation;
-                Destroy(activeEnvelopes[i]);
-                GameObject stamped = Instantiate(stampedEnvelopePrefab, pos, rot);
-                activeEnvelopes[i] = stamped;
-                env.needsStampSwap = false;
-            }
-        }
-
-        isMoving = false;
-    }
-
-    void SpawnNewEnvelope(int positionIndex, bool isInitializing = false)
-    {
-        if (beatmapIndex < currentBeatmap.notes.Length)
-        {
-            NoteData noteData = currentBeatmap.notes[beatmapIndex];
-            if (envelopePrefabDict.TryGetValue(noteData.noteType, out GameObject prefab))
-            {
-                Vector3 spawnPos = isInitializing ? envelopePositions[positionIndex].position : envelopePositions[0].position;
-
-                GameObject newEnvelope = Instantiate(prefab, spawnPos, Quaternion.identity);
-                newEnvelope.GetComponent<Envelope>().noteType = noteData.noteType;
-
-                if (isInitializing)
-                {
-                    activeEnvelopes.Add(newEnvelope);
-                }
-                else
-                {
-                    activeEnvelopes.Insert(0, newEnvelope);
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"Prefab for NoteType {noteData.noteType} not found. Adding null to conveyor.");
-                if (isInitializing) activeEnvelopes.Add(null);
-                else activeEnvelopes.Insert(0, null);
-            }
-            beatmapIndex++;
-        }
-        else
-        {
-            if (isInitializing) activeEnvelopes.Add(null);
-            else activeEnvelopes.Insert(0, null);
-        }
-    }
-
-    void SpawnTimingIndicators(float songPosition)
-    {
-        if (indicatorSpawnIndex < currentBeatmap.notes.Length)
-        {
-            NoteData nextIndicatorNote = currentBeatmap.notes[indicatorSpawnIndex];
-            float spawnTime = nextIndicatorNote.timestamp - indicatorTravelTime;
-            if (songPosition >= spawnTime)
-            {
-                if (indicatorSpawner != null && indicatorPrefabDict.TryGetValue(nextIndicatorNote.noteType, out GameObject prefabToSpawn))
-                {
-                    indicatorSpawner.SpawnIndicator(prefabToSpawn);
-                }
-                indicatorSpawnIndex++;
-            }
-        }
-    }
-
-    void CalculateIndicatorTravelTime()
-    {
-        if (indicatorSpawner == null || targetIndicatorTransform == null) return;
-        if (indicatorPrefabDict.TryGetValue(NoteType.Tap, out GameObject sampleIndicatorPrefab))
-        {
-            TimingIndicator indicatorScript = sampleIndicatorPrefab.GetComponent<TimingIndicator>();
-            if (indicatorScript != null)
-            {
-                float distance = Mathf.Abs(targetIndicatorTransform.position.x - indicatorSpawner.transform.position.x);
-                float speed = indicatorScript.speed;
-                if (speed > 0) indicatorTravelTime = distance / speed;
-            }
-        }
-    }
-
-    IEnumerator MoveEnvelope(GameObject envelope, Vector3 targetPosition)
-    {
-        float time = 0;
-        Vector3 startPosition = envelope.transform.position;
-        while (time < moveDuration)
-        {
-            if (envelope == null) yield break;
-            envelope.transform.position = Vector3.Lerp(startPosition, targetPosition, time / moveDuration);
-            time += Time.deltaTime;
-            yield return null;
-        }
-        if (envelope != null) envelope.transform.position = targetPosition;
+        // If you still want movement like before:
+        // StartCoroutine(AdvanceConveyorCoroutine());
     }
 }
