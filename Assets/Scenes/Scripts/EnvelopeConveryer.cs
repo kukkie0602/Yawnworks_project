@@ -34,6 +34,8 @@ public class EnvelopeConveyor : MonoBehaviour
 
     private bool endGameSequenceStarted = false;
 
+    private bool isMoving = false;
+
 
     void Awake()
     {
@@ -79,7 +81,7 @@ public class EnvelopeConveyor : MonoBehaviour
 
             if (songPosition >= noteLeaveTime)
             {
-                AdvanceConveyor();
+                StartCoroutine(AdvanceConveyorCoroutine());
                 conveyorMoveIndex++;
             }
         }
@@ -120,8 +122,10 @@ public class EnvelopeConveyor : MonoBehaviour
 
     public void ProcessSuccessfulAction(GameObject envelope)
     {
+        if (isMoving) return;
+
         StampEnvelope(envelope);
-        AdvanceConveyor();
+        StartCoroutine(AdvanceConveyorCoroutine());
         conveyorMoveIndex++;
     }
 
@@ -136,23 +140,24 @@ public class EnvelopeConveyor : MonoBehaviour
 
     void InitializeConveyor()
     {
-        for (int i = 0; i < envelopePositions.Length; i++)
+        for (int i = 0; i < 5; i++)
         {
-            if (i >= 5)
+            SpawnNewEnvelope(i, true);
+        }
+        for (int i = 5; i < envelopePositions.Length; i++)
+        {
+            if (stampedEnvelopePrefab != null)
             {
-                if (stampedEnvelopePrefab != null)
-                {
-                    GameObject stampedEnv = Instantiate(stampedEnvelopePrefab, envelopePositions[i].position, Quaternion.identity);
-                    activeEnvelopes.Add(stampedEnv);
-                }
+                GameObject stampedEnv = Instantiate(stampedEnvelopePrefab, envelopePositions[i].position, Quaternion.identity);
+                activeEnvelopes.Add(stampedEnv);
             }
             else
             {
-                SpawnNewEnvelope(i);
+                activeEnvelopes.Add(null);
             }
         }
     }
-  
+
     void StampEnvelope(GameObject envelopeToStamp)
     {
         Envelope env = envelopeToStamp.GetComponent<Envelope>();
@@ -162,68 +167,80 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
-    public void AdvanceConveyor()
+    IEnumerator AdvanceConveyorCoroutine()
     {
+        if (isMoving) yield break;
+        isMoving = true;
+
         if (activeEnvelopes.Count > 8 && activeEnvelopes[8] != null)
         {
             Destroy(activeEnvelopes[8]);
         }
         if (activeEnvelopes.Count > 8) activeEnvelopes.RemoveAt(8);
 
-        for (int i = activeEnvelopes.Count - 1; i >= 0; i--)
+        for (int i = 0; i < activeEnvelopes.Count; i++)
         {
             if (activeEnvelopes[i] != null)
             {
-                int newPositionIndex = i + 1;
-                if (newPositionIndex < envelopePositions.Length)
-                {
-                    StartCoroutine(MoveEnvelope(activeEnvelopes[i], envelopePositions[newPositionIndex].position));
-                }
+                StartCoroutine(MoveEnvelope(activeEnvelopes[i], envelopePositions[i + 1].position));
             }
         }
 
-        StartCoroutine(SwapStampedAfterMove());
+        yield return new WaitForSeconds(moveDuration);
 
         SpawnNewEnvelope(0);
-    }
-
-    IEnumerator SwapStampedAfterMove()
-    {
-        yield return new WaitForSeconds(moveDuration);
 
         for (int i = 0; i < activeEnvelopes.Count; i++)
         {
             if (activeEnvelopes[i] == null) continue;
-
             Envelope env = activeEnvelopes[i].GetComponent<Envelope>();
             if (env != null && env.needsStampSwap)
             {
                 Vector3 pos = activeEnvelopes[i].transform.position;
                 Quaternion rot = activeEnvelopes[i].transform.rotation;
-
                 Destroy(activeEnvelopes[i]);
                 GameObject stamped = Instantiate(stampedEnvelopePrefab, pos, rot);
                 activeEnvelopes[i] = stamped;
+                env.needsStampSwap = false;
             }
         }
+
+        isMoving = false;
     }
 
-    void SpawnNewEnvelope(int positionIndex)
+    void SpawnNewEnvelope(int positionIndex, bool isInitializing = false)
     {
         if (beatmapIndex < currentBeatmap.notes.Length)
         {
             NoteData noteData = currentBeatmap.notes[beatmapIndex];
             if (envelopePrefabDict.TryGetValue(noteData.noteType, out GameObject prefab))
             {
-                GameObject newEnvelope = Instantiate(prefab, envelopePositions[positionIndex].position, Quaternion.identity);
+                Vector3 spawnPos = isInitializing ? envelopePositions[positionIndex].position : envelopePositions[0].position;
+
+                GameObject newEnvelope = Instantiate(prefab, spawnPos, Quaternion.identity);
                 newEnvelope.GetComponent<Envelope>().noteType = noteData.noteType;
-                activeEnvelopes.Insert(positionIndex, newEnvelope);
+
+                if (isInitializing)
+                {
+                    activeEnvelopes.Add(newEnvelope);
+                }
+                else
+                {
+                    activeEnvelopes.Insert(0, newEnvelope);
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Prefab for NoteType {noteData.noteType} not found. Adding null to conveyor.");
+                if (isInitializing) activeEnvelopes.Add(null);
+                else activeEnvelopes.Insert(0, null);
             }
             beatmapIndex++;
         }
         else
         {
-            activeEnvelopes.Insert(positionIndex, null);
+            if (isInitializing) activeEnvelopes.Add(null);
+            else activeEnvelopes.Insert(0, null);
         }
     }
 
