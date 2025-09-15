@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeLevel
   sequences:
-  - pattern: 010000000000000000000000
-  - pattern: 010000000000000000000000
+  - pattern: 000000000000000000000000
+  - pattern: 000000000000000000000000
   - pattern: 000000000000000000000000
   - pattern: 000000000000000000000000
   - pattern: 000000000000000000000000

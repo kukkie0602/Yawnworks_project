@@ -35,10 +35,9 @@ public class EnvelopeConveyor : MonoBehaviour
         StartCoroutine(PlaySequenceCoroutine());
     }
 
-    private IEnumerator TriggerArmsAfterDelay(GameObject envelope, float delay)
+    public bool IsInExamplePhase()
     {
-        yield return new WaitForSeconds(delay);
-        StampEnvelope(envelope);
+        return isExamplePhase;
     }
 
     IEnumerator PlaySequenceCoroutine()
@@ -90,7 +89,7 @@ public class EnvelopeConveyor : MonoBehaviour
         }
 
         // Wait until envelopes are fully at the end positions
-        yield return new WaitForSeconds(moveDuration * envelopePositions.Length);
+        yield return new WaitForSeconds(moveDuration);
     }
 
     // Coroutine to move a single envelope along the conveyor
