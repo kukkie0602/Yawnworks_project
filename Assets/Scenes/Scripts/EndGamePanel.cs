@@ -8,6 +8,7 @@ public class EndGamePanel : MonoBehaviour
     public ScoreManager scoreManager;
     public TMP_Text currentScoreText;
     public GameObject endGamePanel;
+    public TMP_Text endGameMessageText;
     public void GoToMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");

@@ -4,19 +4,29 @@ using TMPro;
 public class ScoreManager : MonoBehaviour
 {
     [Header("Scoring")]
-    public int pointsPerNote = 100;
+    public int pointsPerNote = 100;  
     private int currentScore = 0;
     private int comboCount = 0;
     private int maxCombo = 12;
+    private int missesThisAttempt = 0;
 
     [Header("UI Elements")]
-    public TMP_Text scoreText;
-    public TMP_Text comboText;
+    public TMP_Text scoreText;  
+    public TMP_Text comboText;  
 
+    public bool scoreDisplayEnabled = true;
     void Start()
     {
-        enableScoreDisplay();
-        ResetScore();
+        if (!scoreDisplayEnabled)
+        {
+            disableScoreDisplay();
+        }
+        ResetScore();  
+    }
+
+    public bool IsScoreDisplayEnabled()
+    {
+        return scoreDisplayEnabled;
     }
 
     public void OnNoteHit()
@@ -24,59 +34,72 @@ public class ScoreManager : MonoBehaviour
         if (comboCount < maxCombo)
             comboCount++;
 
-        currentScore += pointsPerNote * comboCount;
+        currentScore += pointsPerNote * comboCount;  
 
         UpdateDisplay();
     }
 
     public void OnNoteMiss()
     {
-        comboCount = 0;
+        comboCount = 0;  
+        missesThisAttempt++;
         UpdateDisplay();
+    }
+
+    public void ResetMissesForAttempt()
+    {
+        missesThisAttempt = 0;
+    }
+
+    public int GetMissesThisAttempt()
+    {
+        return missesThisAttempt;
     }
 
     public void ResetScore()
     {
-        currentScore = 0;
-        comboCount = 0;
+        currentScore = 0;  
+        comboCount = 0;  
+        ResetMissesForAttempt();
         UpdateDisplay();
     }
 
     private void UpdateDisplay()
     {
+        if (!scoreDisplayEnabled) return;
         if (scoreText != null)
         {
-            scoreText.text = "Score: " +  currentScore.ToString("D6");
+            scoreText.text = "Score: " + currentScore.ToString("D6");  
         }
 
         if (comboText != null)
         {
             if (comboCount > 1)
             {
-                comboText.gameObject.SetActive(true);
-                comboText.text = comboCount + "x Combo";
+                comboText.gameObject.SetActive(true);  
+                comboText.text = comboCount + "x Combo";  
             }
             else
             {
-                comboText.gameObject.SetActive(false);
+                comboText.gameObject.SetActive(false);  
             }
         }
     }
 
     public int GetCurrentScore()
     {
-        return currentScore;
+        return currentScore;  
     }
 
     public void disableScoreDisplay()
     {
         if (scoreText != null)
         {
-            scoreText.gameObject.SetActive(false);
+            scoreText.gameObject.SetActive(false);  
         }
         if (comboText != null)
         {
-            comboText.gameObject.SetActive(false);
+            comboText.gameObject.SetActive(false);  
         }
     }
 
@@ -84,21 +107,21 @@ public class ScoreManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.gameObject.SetActive(true);
+            scoreText.gameObject.SetActive(true);  
         }
         if (comboText != null)
         {
-            comboText.gameObject.SetActive(true);
+            comboText.gameObject.SetActive(true);  
         }
     }
 
     public void CheckForHighScore(EnvelopeLevel beatmap)
     {
-        if (beatmap == null) return;
+        if (beatmap == null) return;  
 
         HighScoresData highScores = SaveSystem.LoadHighScores();
 
-        int levelIndex = highScores.levelNames.IndexOf(beatmap.name);
+        int levelIndex = highScores.levelNames.IndexOf(beatmap.name);  
 
         if (levelIndex != -1)
         {

@@ -9,32 +9,32 @@ public class TimingManager : MonoBehaviour
     public ScoreManager scoreManager;
     public ArmsController armsController;
 
+    [Header("Settings")]
     [Tooltip("Stamped version of the envelope (for player phase).")]
     public Sprite stampedEnvelopeSprite;
-
     [Tooltip("Delay before swapping to stamped version (seconds).")]
     public float stampDelay = 0.3f;
+
+    public bool playerInputEnabled = true;
 
     private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (playerInputEnabled && Input.GetMouseButtonDown(0))
         {
             if (activeEnvelopesInZone.Count > 0)
             {
-                Envelope envelopeToHit = activeEnvelopesInZone[0]; // first in zone
+                Envelope envelopeToHit = activeEnvelopesInZone[0];
 
                 if (envelopeToHit != null && envelopeToHit.noteType == NoteType.Tap)
                 {
                     Debug.Log("HIT on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteHit();
 
-                    // play arms animation right away
                     if (armsController != null)
                         armsController.PlayArmsAnimation();
 
-                    // start delayed swap
                     StartCoroutine(SwapSprite(envelopeToHit));
                     envelopeToHit.needsStampSwap = false;
 
@@ -65,8 +65,11 @@ public class TimingManager : MonoBehaviour
         Envelope env = other.GetComponent<Envelope>();
         if (env != null && activeEnvelopesInZone.Contains(env))
         {
-            Debug.Log("MISS! (Pressed too late)");
-            scoreManager.OnNoteMiss();
+            if (playerInputEnabled)
+            {
+                Debug.Log("MISS! (Pressed too late)");
+                scoreManager.OnNoteMiss();
+            }
             activeEnvelopesInZone.Remove(env);
         }
     }
