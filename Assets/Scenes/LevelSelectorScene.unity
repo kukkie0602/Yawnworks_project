@@ -808,6 +808,10 @@ PrefabInstance:
       propertyPath: difficultyText
       value: 
       objectReference: {fileID: 1034012570701951087}
+    - target: {fileID: 1188534034277768595, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
+      propertyPath: associatedLevel
+      value: 
+      objectReference: {fileID: 11400000, guid: 9d698025b4cf8af48a6ec7bb01034d2e, type: 2}
     - target: {fileID: 2666882626774707817, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
       propertyPath: m_text
       value: 

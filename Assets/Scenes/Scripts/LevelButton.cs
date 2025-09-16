@@ -5,7 +5,7 @@ public class LevelButton : MonoBehaviour
 {
     [Header("Level Data")]
     [Tooltip("The BeatmapData asset this button represents.")]
-    public BeatmapData associatedBeatmap;
+    public EnvelopeLevel associatedLevel;
 
     [Header("UI References")]
     [Tooltip("The Text element that will display the song name.")]
@@ -25,27 +25,27 @@ public class LevelButton : MonoBehaviour
 
     void LoadAndDisplayData()
     {
-        if (associatedBeatmap == null)
+        if (associatedLevel == null)
         {
-            Debug.LogError("No BeatmapData assigned to this button!");
+            Debug.LogError("No LevelData assigned to this button!");
             return;
         }
 
         if (songNameText != null)
         {
-            songNameText.text = associatedBeatmap.levelName;
+            songNameText.text = associatedLevel.levelName;
         }
 
         if (difficultyText != null)
         {
-            difficultyText.text = "Difficulty: " + associatedBeatmap.difficulty;
+            difficultyText.text = "Difficulty: " + associatedLevel.difficulty;
         }
 
         if (highScoreText != null)
         {
             HighScoresData highScores = SaveSystem.LoadHighScores();
 
-            int levelIndex = highScores.levelNames.IndexOf(associatedBeatmap.name);
+            int levelIndex = highScores.levelNames.IndexOf(associatedLevel.name);
             int score = 0;
 
             if (levelIndex != -1)

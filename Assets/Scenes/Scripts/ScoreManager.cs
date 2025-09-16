@@ -92,7 +92,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void CheckForHighScore(BeatmapData beatmap)
+    public void CheckForHighScore(EnvelopeLevel beatmap)
     {
         if (beatmap == null) return;
 
