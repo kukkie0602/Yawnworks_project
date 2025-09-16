@@ -808,6 +808,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0.5
+--- !u!114 &279100221 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
+  m_PrefabInstance: {fileID: 1530042555114717878}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279100213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7678e13b9482c41b39b0d951d12f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimingManager
 --- !u!1 &303166195
 GameObject:
   m_ObjectHideFlags: 0
@@ -837,8 +848,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a180303e7a3c5b84d9d605ff19353ad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeConveyor
+  isTutorialMode: 0
   levelData: {fileID: 11400000, guid: 9d698025b4cf8af48a6ec7bb01034d2e, type: 2}
   armsController: {fileID: 1100402132}
+  timingManager: {fileID: 279100221}
   envelopePositions:
   - {fileID: 1143249102}
   - {fileID: 1370890413}
@@ -849,9 +862,9 @@ MonoBehaviour:
   - {fileID: 902065895}
   - {fileID: 677353333}
   - {fileID: 977278064}
-  spacingFactor: 0.39999998
+  spacingFactor: 0.5
   moveDuration: 0.3
-  envelopeDistance: 0.5
+  envelopeDistance: 0.62
   stampedEnvelopePrefab: {fileID: 3879698585123424553, guid: e6734ada3854fa945b959a7e9c7f2662, type: 3}
   noteMappings:
   - noteType: 0
@@ -1060,6 +1073,7 @@ MonoBehaviour:
   scoreManager: {fileID: 695369576}
   currentScoreText: {fileID: 386910288}
   endGamePanel: {fileID: 652969071}
+  endGameMessageText: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,6 +1851,7 @@ MonoBehaviour:
   pointsPerNote: 100
   scoreText: {fileID: 386910288}
   comboText: {fileID: 900654769}
+  scoreDisplayEnabled: 1
 --- !u!4 &695369577
 Transform:
   m_ObjectHideFlags: 0
@@ -2849,8 +2864,7 @@ MonoBehaviour:
   pauseMenuPanel: {fileID: 849628135}
   volumeSlider: {fileID: 1869893403}
   pauseMenuButton: {fileID: 1252520128}
-  scoreText: {fileID: 386910286}
-  comboText: {fileID: 900654767}
+  scoreManager: {fileID: 0}
   mainMixer: {fileID: 24100000, guid: 4a9ed6f3a13c4c3409cda99b8caeedef, type: 2}
   musicSource: {fileID: 1041615260}
 --- !u!4 &1299340536
@@ -4360,7 +4374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00018310547, y: 0.00024414062}
+  m_AnchoredPosition: {x: 0.00024414062, y: 0.00024414062}
   m_SizeDelta: {x: -0.00061035, y: 0.00048828}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2023367741

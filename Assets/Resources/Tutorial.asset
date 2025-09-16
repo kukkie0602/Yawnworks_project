@@ -17,3 +17,4 @@ MonoBehaviour:
   difficulty: 0
   sequences:
   - pattern: 00000000000000000000000000000000
+    moveDuration: 0.4

@@ -63,12 +63,8 @@ public class EnvelopeConveyor : MonoBehaviour
             // spacing derived from travel time and global spacingFactor
             float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor;
 
-            // Example Phase
-            isExamplePhase = true;
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
 
-            // Player Phase
-            isExamplePhase = false;
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, spacing));
 
             sequenceIndex++;
@@ -77,20 +73,18 @@ public class EnvelopeConveyor : MonoBehaviour
         Debug.Log("Level Complete!");
     }
 
-
-
-    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float spacing)
+    
     public IEnumerator PlayExamplePhase(EnvelopeSequence seq)
     {
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true));
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, 0.5f));
     }
 
     public IEnumerator PlayPlayerPhase(EnvelopeSequence seq)
     {
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false));
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, 0.5f));
     }
 
-    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
+    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float spacing)
     {
         activeEnvelopes.Clear();
         float timeBetweenNotes = 0.62f;
