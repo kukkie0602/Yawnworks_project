@@ -19,6 +19,6 @@ MonoBehaviour:
   - pattern: 000000000000000000000000
     moveDuration: 0.4
   - pattern: 000000000000000000000000
-    moveDuration: 0.1
+    moveDuration: 0.3
   - pattern: 000000000000000000000000
     moveDuration: 0.8
