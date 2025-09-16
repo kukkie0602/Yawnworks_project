@@ -1071,6 +1071,7 @@ MonoBehaviour:
   scoreManager: {fileID: 695369576}
   currentScoreText: {fileID: 386910288}
   endGamePanel: {fileID: 652969071}
+  endGameMessageText: {fileID: 1755415034}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -3757,6 +3758,7 @@ MonoBehaviour:
   targetSuccesses: 5
   instructionText: {fileID: 931435667}
   progressText: {fileID: 1455761730}
+  tutorialImage: {fileID: 0}
 --- !u!4 &1571610143
 Transform:
   m_ObjectHideFlags: 0
