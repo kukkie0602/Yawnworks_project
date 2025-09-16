@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e5546375aa38b4ea3594ab789c44d7, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeLevel
+  songClip: {fileID: 0}
+  levelName: The Postoffice
+  difficulty: 0
   sequences:
   - pattern: 00000000000000000000000000000000
   - pattern: 00000000000000000000000000000000
