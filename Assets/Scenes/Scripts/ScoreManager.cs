@@ -91,28 +91,4 @@ public class ScoreManager : MonoBehaviour
             comboText.gameObject.SetActive(true);
         }
     }
-
-    public void CheckForHighScore(BeatmapData beatmap)
-    {
-        if (beatmap == null) return;
-
-        HighScoresData highScores = SaveSystem.LoadHighScores();
-
-        int levelIndex = highScores.levelNames.IndexOf(beatmap.name);
-
-        if (levelIndex != -1)
-        {
-            if (currentScore > highScores.scores[levelIndex])
-            {
-                highScores.scores[levelIndex] = currentScore;
-            }
-        }
-        else
-        {
-            highScores.levelNames.Add(beatmap.name);
-            highScores.scores.Add(currentScore);
-        }
-
-        SaveSystem.SaveHighScores(highScores);
-    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnvelopeConveyor : MonoBehaviour
 {
     [Header("Level Data")]
-    public EnvelopeLevel levelData; // reference to ScriptableObject
+    public EnvelopeLevel levelData;
     [Header("UI References")]
     public ArmsController armsController;
     [Header("Prefabs & References")]
@@ -33,11 +33,6 @@ public class EnvelopeConveyor : MonoBehaviour
         }
 
         StartCoroutine(PlaySequenceCoroutine());
-    }
-
-    public bool IsInExamplePhase()
-    {
-        return isExamplePhase;
     }
 
     IEnumerator PlaySequenceCoroutine()
@@ -70,7 +65,6 @@ public class EnvelopeConveyor : MonoBehaviour
 
             if (envelopePrefabDict.TryGetValue(type, out GameObject prefab))
             {
-                // Spawn at the first conveyor position
                 GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
                 env.GetComponent<Envelope>().noteType = type;
                 activeEnvelopes.Add(env);
@@ -80,19 +74,15 @@ public class EnvelopeConveyor : MonoBehaviour
                     env.GetComponent<Envelope>().needsStampSwap = true;
                 }
 
-                // Move envelope along the conveyor positions
                 StartCoroutine(MoveEnvelopeAlongConveyor(env, i));
             }
 
-            // Wait a bit before spawning the next envelope
             yield return new WaitForSeconds(0.62f);
         }
 
-        // Wait until envelopes are fully at the end positions
         yield return new WaitForSeconds(moveDuration);
     }
 
-    // Coroutine to move a single envelope along the conveyor
     IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, int sequenceIndex)
     {
         for (int posIndex = 0; posIndex < envelopePositions.Length; posIndex++)
@@ -111,7 +101,6 @@ public class EnvelopeConveyor : MonoBehaviour
             envelope.transform.position = endPos;
         }
 
-        // Optionally destroy envelope after reaching end
         Destroy(envelope);
         activeEnvelopes.Remove(envelope);
     }
@@ -128,27 +117,6 @@ public class EnvelopeConveyor : MonoBehaviour
                 armsController.PlayArmsAnimation();
             }
         }
-    }
-
-    public void ProcessPlayerAction(NoteType inputType)
-    {
-        if (isExamplePhase) return; // Ignore input during example
-
-        Envelope current = GetCenterEnvelope();
-        if (current != null && current.noteType == inputType)
-        {
-            Debug.Log("Correct!");
-            StampEnvelope(current.gameObject);
-        }
-        else
-        {
-            Debug.Log("Wrong!");
-        }
-    }
-
-    public Envelope GetCenterEnvelope()
-    {
-        return activeEnvelopes.Count > 0 ? activeEnvelopes[0].GetComponent<Envelope>() : null;
     }
 
     public void ProcessSuccessfulAction(GameObject envelope)
