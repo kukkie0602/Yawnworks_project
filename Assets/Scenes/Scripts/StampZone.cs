@@ -12,10 +12,16 @@ public class StampTriggerZone : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Envelope env = other.GetComponent<Envelope>();
+        stampDelay = env.moveDuration;
         if (env != null && env.needsStampSwap)
         {
             if (armsController != null)
-                armsController.PlayArmsAnimation();
+            {
+                float defaultAnimationDuration = 0.3f;
+                float speedMultiplier = defaultAnimationDuration / env.moveDuration;
+                armsController.PlayArmsAnimation(speedMultiplier);
+            }
+
             StartCoroutine(SwapSprite(env));
             env.needsStampSwap = false;
         }

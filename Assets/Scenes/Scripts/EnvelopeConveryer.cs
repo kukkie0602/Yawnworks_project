@@ -10,7 +10,10 @@ public class EnvelopeConveyor : MonoBehaviour
     public ArmsController armsController;
     [Header("Prefabs & References")]
     public Transform[] envelopePositions;
+    [Range(0.1f, 2f)]
+    public float spacingFactor = 0.5f;
     public float moveDuration = 0.1f;
+    public float envelopeDistance = 0.62f;
     public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
     public Animator armsAnimator;
@@ -41,13 +44,19 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             var seq = levelData.sequences[sequenceIndex];
 
-            // --- Example Phase ---
-            isExamplePhase = true;
-            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true));
+            // total travel time = positions * moveDuration
+            float totalTravelTime = envelopePositions.Length * seq.moveDuration;
 
-            // --- Player Phase ---
+            // spacing derived from travel time and global spacingFactor
+            float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor;
+
+            // Example Phase
+            isExamplePhase = true;
+            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
+
+            // Player Phase
             isExamplePhase = false;
-            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false));
+            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, spacing));
 
             sequenceIndex++;
         }
@@ -55,7 +64,9 @@ public class EnvelopeConveyor : MonoBehaviour
         Debug.Log("Level Complete!");
     }
 
-    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
+
+
+    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float spacing)
     {
         activeEnvelopes.Clear();
 
@@ -67,23 +78,24 @@ public class EnvelopeConveyor : MonoBehaviour
             {
                 GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
                 env.GetComponent<Envelope>().noteType = type;
+                env.GetComponent<Envelope>().moveDuration = seq.moveDuration;
                 activeEnvelopes.Add(env);
 
                 if (autoStamp)
-                {
                     env.GetComponent<Envelope>().needsStampSwap = true;
-                }
 
-                StartCoroutine(MoveEnvelopeAlongConveyor(env, i));
+                StartCoroutine(MoveEnvelopeAlongConveyor(env, seq.moveDuration));
             }
 
-            yield return new WaitForSeconds(0.62f);
+            yield return new WaitForSeconds(spacing);
         }
 
-        yield return new WaitForSeconds(moveDuration);
+        while (activeEnvelopes.Count > 0)
+            yield return null;
     }
 
-    IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, int sequenceIndex)
+
+    IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, float moveDuration)
     {
         for (int posIndex = 0; posIndex < envelopePositions.Length; posIndex++)
         {
@@ -105,16 +117,19 @@ public class EnvelopeConveyor : MonoBehaviour
         activeEnvelopes.Remove(envelope);
     }
 
-    void StampEnvelope(GameObject env)
+    void StampEnvelope(GameObject env, float moveDuration)
     {
         Envelope e = env.GetComponent<Envelope>();
         if (e != null && e.needsStampSwap)
         {
-            e.needsStampSwap = false; 
+            e.needsStampSwap = false;
 
             if (armsController != null)
             {
-                armsController.PlayArmsAnimation();
+                const float defaultAnimationDuration = 0.3f;
+                float speedMultiplier = defaultAnimationDuration / moveDuration;
+                Debug.Log($"Stamp Speed Multiplier: {speedMultiplier}, moveDuration: {moveDuration}");
+                armsController.PlayArmsAnimation(speedMultiplier);
             }
         }
     }
@@ -122,7 +137,8 @@ public class EnvelopeConveyor : MonoBehaviour
     public void ProcessSuccessfulAction(GameObject envelope)
     {
         // Stamp the envelope (visual feedback)
-        StampEnvelope(envelope);
+        Envelope e = envelope.GetComponent<Envelope>();
+        StampEnvelope(envelope, e.moveDuration);
 
         // Optionally: remove it from active list
         if (activeEnvelopes.Contains(envelope))

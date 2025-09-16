@@ -849,7 +849,9 @@ MonoBehaviour:
   - {fileID: 902065895}
   - {fileID: 677353333}
   - {fileID: 977278064}
-  moveDuration: 0.4
+  spacingFactor: 0.39999998
+  moveDuration: 0.3
+  envelopeDistance: 0.5
   stampedEnvelopePrefab: {fileID: 3879698585123424553, guid: e6734ada3854fa945b959a7e9c7f2662, type: 3}
   noteMappings:
   - noteType: 0
