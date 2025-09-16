@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class TimingManager : MonoBehaviour
@@ -6,30 +7,39 @@ public class TimingManager : MonoBehaviour
     [Header("Game References")]
     public EnvelopeConveyor conveyor;
     public ScoreManager scoreManager;
-    public Animator armsAnimator;
-    private List<TimingIndicator> activeIndicators = new List<TimingIndicator>();
+    public ArmsController armsController;
+
+    [Tooltip("Stamped version of the envelope (for player phase).")]
+    public Sprite stampedEnvelopeSprite;
+
+    [Tooltip("Delay before swapping to stamped version (seconds).")]
+    public float stampDelay = 0.3f;
+
+    private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (activeIndicators.Count > 0)
+            if (activeEnvelopesInZone.Count > 0)
             {
-                TimingIndicator indicatorToHit = activeIndicators[0];
-                Envelope centerEnvelope = conveyor.GetCenterEnvelope();
+                Envelope envelopeToHit = activeEnvelopesInZone[0]; // first in zone
 
-                if (centerEnvelope != null && centerEnvelope.noteType == NoteType.Tap)
+                if (envelopeToHit != null && envelopeToHit.noteType == NoteType.Tap)
                 {
-                    Debug.Log("HIT!");
+                    Debug.Log("HIT on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteHit();
-                    conveyor.ProcessSuccessfulAction(centerEnvelope.gameObject);
 
-                    activeIndicators.Remove(indicatorToHit);
-                    Destroy(indicatorToHit.gameObject);
-                    if (armsAnimator != null)
-                    {
-                        armsAnimator.Play("ArmsAnimation", -1, 0f);
-                    }
+                    // play arms animation right away
+                    if (armsController != null)
+                        armsController.PlayArmsAnimation();
+
+                    // start delayed swap
+                    StartCoroutine(SwapSprite(envelopeToHit));
+                    envelopeToHit.needsStampSwap = false;
+
+                    conveyor.ProcessSuccessfulAction(envelopeToHit.gameObject);
+                    activeEnvelopesInZone.Remove(envelopeToHit);
                 }
             }
             else
@@ -42,21 +52,34 @@ public class TimingManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        TimingIndicator indicator = other.GetComponent<TimingIndicator>();
-        if (indicator != null && !activeIndicators.Contains(indicator))
+        Envelope env = other.GetComponent<Envelope>();
+        if (env != null && !activeEnvelopesInZone.Contains(env))
         {
-            activeIndicators.Add(indicator);
+            activeEnvelopesInZone.Add(env);
+            Debug.Log("Envelope entered hit zone: " + env.name);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        TimingIndicator indicator = other.GetComponent<TimingIndicator>();
-        if (indicator != null && activeIndicators.Contains(indicator))
+        Envelope env = other.GetComponent<Envelope>();
+        if (env != null && activeEnvelopesInZone.Contains(env))
         {
             Debug.Log("MISS! (Pressed too late)");
             scoreManager.OnNoteMiss();
-            activeIndicators.Remove(indicator);
+            activeEnvelopesInZone.Remove(env);
+        }
+    }
+
+    private IEnumerator SwapSprite(Envelope env)
+    {
+        yield return new WaitForSeconds(stampDelay);
+
+        if (stampedEnvelopeSprite != null)
+        {
+            var sr = env.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.sprite = stampedEnvelopeSprite;
         }
     }
 }
