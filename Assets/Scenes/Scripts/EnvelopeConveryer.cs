@@ -57,11 +57,9 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             var seq = levelData.sequences[sequenceIndex];
 
-            // total travel time = positions * moveDuration
             float totalTravelTime = envelopePositions.Length * seq.moveDuration;
 
-            // spacing derived from travel time and global spacingFactor
-            float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor;
+            float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor + 0.05f;
 
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
 

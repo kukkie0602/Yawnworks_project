@@ -33,7 +33,12 @@ public class TimingManager : MonoBehaviour
                     scoreManager.OnNoteHit();
 
                     if (armsController != null)
-                        armsController.PlayArmsAnimation();
+                    {
+                        float defaultAnimationDuration = 0.3f;
+                        float speedMultiplier = defaultAnimationDuration / envelopeToHit.moveDuration;
+                        armsController.PlayArmsAnimation(speedMultiplier);
+                    }
+                        
 
                     StartCoroutine(SwapSprite(envelopeToHit));
                     envelopeToHit.needsStampSwap = false;
