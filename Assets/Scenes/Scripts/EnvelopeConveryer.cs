@@ -4,10 +4,16 @@ using UnityEngine;
 
 public class EnvelopeConveyor : MonoBehaviour
 {
+    [Header("Mode")]
+    [Tooltip("Turn this on if the scene is controlled by the tutorial manager.")]
+    public bool isTutorialMode = false;
+
     [Header("Level Data")]
     public EnvelopeLevel levelData;
     [Header("UI References")]
     public ArmsController armsController;
+    public TimingManager timingManager;
+
     [Header("Prefabs & References")]
     public Transform[] envelopePositions;
     public float moveDuration = 0.1f;
@@ -18,7 +24,6 @@ public class EnvelopeConveyor : MonoBehaviour
     private List<GameObject> activeEnvelopes = new List<GameObject>();
 
     private int sequenceIndex = 0;
-    private bool isExamplePhase = true;
 
     void Start()
     {
@@ -26,13 +31,21 @@ public class EnvelopeConveyor : MonoBehaviour
         foreach (var mapping in noteMappings)
             envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
 
-        if (levelData == null || levelData.sequences.Length == 0)
+        if (!isTutorialMode)
         {
-            Debug.LogError("No level assigned or empty level data!");
-            return;
+            if (levelData == null || levelData.sequences.Length == 0)
+            {
+                Debug.LogError("No level assigned or empty level data!");
+                return;
+            }
+            if (timingManager == null)
+            {
+                Debug.LogError("Timing Manager is nog assigned in the EnvelopeConveyor!");
+                this.enabled = false;
+                return;
+            }
+            StartCoroutine(PlaySequenceCoroutine());
         }
-
-        StartCoroutine(PlaySequenceCoroutine());
     }
 
     IEnumerator PlaySequenceCoroutine()
@@ -41,23 +54,32 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             var seq = levelData.sequences[sequenceIndex];
 
-            // --- Example Phase ---
-            isExamplePhase = true;
+            timingManager.playerInputEnabled = false;
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true));
 
-            // --- Player Phase ---
-            isExamplePhase = false;
+            timingManager.playerInputEnabled = true;
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false));
 
             sequenceIndex++;
         }
-
+        timingManager.playerInputEnabled = false;
         Debug.Log("Level Complete!");
+    }
+
+    public IEnumerator PlayExamplePhase(EnvelopeSequence seq)
+    {
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true));
+    }
+
+    public IEnumerator PlayPlayerPhase(EnvelopeSequence seq)
+    {
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false));
     }
 
     IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
     {
         activeEnvelopes.Clear();
+        float timeBetweenNotes = 0.62f;
 
         for (int i = 0; i < seq.pattern.Length; i++)
         {
@@ -73,14 +95,13 @@ public class EnvelopeConveyor : MonoBehaviour
                 {
                     env.GetComponent<Envelope>().needsStampSwap = true;
                 }
-
                 StartCoroutine(MoveEnvelopeAlongConveyor(env, i));
             }
-
-            yield return new WaitForSeconds(0.62f);
+            yield return new WaitForSeconds(timeBetweenNotes);
         }
 
-        yield return new WaitForSeconds(moveDuration);
+        float conveyorClearTime = envelopePositions.Length * moveDuration;
+        yield return new WaitForSeconds(conveyorClearTime);
     }
 
     IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, int sequenceIndex)
@@ -93,15 +114,20 @@ public class EnvelopeConveyor : MonoBehaviour
             float elapsed = 0f;
             while (elapsed < moveDuration)
             {
+                if (envelope == null) yield break;
                 envelope.transform.position = Vector3.Lerp(startPos, endPos, elapsed / moveDuration);
                 elapsed += Time.deltaTime;
                 yield return null;
             }
 
+            if (envelope == null) yield break;
             envelope.transform.position = endPos;
         }
 
-        Destroy(envelope);
+        if (envelope != null)
+        {
+            Destroy(envelope);
+        }
         activeEnvelopes.Remove(envelope);
     }
 
@@ -110,7 +136,7 @@ public class EnvelopeConveyor : MonoBehaviour
         Envelope e = env.GetComponent<Envelope>();
         if (e != null && e.needsStampSwap)
         {
-            e.needsStampSwap = false; 
+            e.needsStampSwap = false;
 
             if (armsController != null)
             {
@@ -121,16 +147,11 @@ public class EnvelopeConveyor : MonoBehaviour
 
     public void ProcessSuccessfulAction(GameObject envelope)
     {
-        // Stamp the envelope (visual feedback)
         StampEnvelope(envelope);
 
-        // Optionally: remove it from active list
         if (activeEnvelopes.Contains(envelope))
         {
             activeEnvelopes.Remove(envelope);
         }
-
-        // If you still want movement like before:
-        // StartCoroutine(AdvanceConveyorCoroutine());
     }
 }
