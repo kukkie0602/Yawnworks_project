@@ -85,7 +85,6 @@ public class EnvelopeConveyor : MonoBehaviour
     IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float spacing)
     {
         activeEnvelopes.Clear();
-        float timeBetweenNotes = 0.62f;
 
         for (int i = 0; i < seq.pattern.Length; i++)
         {
@@ -171,7 +170,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public float MoveSpeed(EnvelopeSequence seq)
     {
         float totalTravelTime = envelopePositions.Length * seq.moveDuration;
-        float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor + 0.05f;
+        float spacing = (totalTravelTime / 3) * spacingFactor + 0.05f;
         return spacing;
     }
 }
