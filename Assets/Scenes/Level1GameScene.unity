@@ -871,7 +871,10 @@ MonoBehaviour:
     envelopePrefab: {fileID: 5391714462202279252, guid: dbca6626731097e4187000813d06ee98, type: 3}
     indicatorPrefab: {fileID: 6928378579053156205, guid: 7775c5288eb5518438b5cc92bea75cbf, type: 3}
   - noteType: 1
-    envelopePrefab: {fileID: 4140000429361478535, guid: 235516d8ff9f1774aa78a1e43d099eb3, type: 3}
+    envelopePrefab: {fileID: 5391714462202279252, guid: f912ee3238df0114690e6365c190a326, type: 3}
+    indicatorPrefab: {fileID: 6928378579053156205, guid: 7775c5288eb5518438b5cc92bea75cbf, type: 3}
+  - noteType: 2
+    envelopePrefab: {fileID: 5391714462202279252, guid: 5bd88e352db3cf54aa45a0f40c76ecc4, type: 3}
     indicatorPrefab: {fileID: 6928378579053156205, guid: 7775c5288eb5518438b5cc92bea75cbf, type: 3}
   armsAnimator: {fileID: 1100402131}
 --- !u!4 &303166197
@@ -2322,6 +2325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   armsController: {fileID: 1100402132}
   stampedEnvelopeSprite: {fileID: -2947641425840669725, guid: cf75a79daabfc9f438086608fe296175, type: 3}
+  stampedEnvelopeBlue: {fileID: -6391640921839891155, guid: ed97f60ff2cd92844ab6e00346fe924a, type: 3}
   stampDelay: 0.3
 --- !u!58 &1023086589
 CircleCollider2D:
@@ -4451,6 +4455,10 @@ PrefabInstance:
       propertyPath: armsController
       value: 
       objectReference: {fileID: 1100402132}
+    - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
+      propertyPath: stampedEnvelopeBlue
+      value: 
+      objectReference: {fileID: -6391640921839891155, guid: ed97f60ff2cd92844ab6e00346fe924a, type: 3}
     - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: stampedEnvelopeSprite
       value: 

@@ -5,6 +5,7 @@ public class StampTriggerZone : MonoBehaviour
     public ArmsController armsController;
     [Tooltip("The stamped version of the envelope prefab (optional).")]
     public Sprite stampedEnvelopeSprite;
+    public Sprite stampedEnvelopeBlue;
 
     [Tooltip("Delay before swapping to stamped version (seconds).")]
     public float stampDelay = 0.3f;
@@ -13,7 +14,7 @@ public class StampTriggerZone : MonoBehaviour
     {
         Envelope env = other.GetComponent<Envelope>();
         stampDelay = env.moveDuration;
-        if (env != null && env.needsStampSwap)
+        if (env != null && env.needsStampSwap && env.noteType != NoteType.SkipOne)
         {
             if (armsController != null)
             {
@@ -29,12 +30,28 @@ public class StampTriggerZone : MonoBehaviour
     private IEnumerator SwapSprite(Envelope env)
     {
         yield return new WaitForSeconds(stampDelay);
-
-        if (stampedEnvelopeSprite != null)
+        if (stampedEnvelopeSprite != null && stampedEnvelopeBlue != null)
         {
             var sr = env.GetComponent<SpriteRenderer>();
             if (sr != null)
-                sr.sprite = stampedEnvelopeSprite;
+            {
+
+                if (env.noteType == NoteType.Tap)
+                {
+                    sr.sprite = stampedEnvelopeSprite;
+                    Debug.Log("Hallo");
+                }
+
+
+                else if (env.noteType == NoteType.HalfTap)
+                {
+                    sr.sprite = stampedEnvelopeBlue;
+                    Debug.Log("Hallo");
+                }
+
+            }
+
+
         }
     }
 }

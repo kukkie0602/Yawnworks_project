@@ -16,9 +16,25 @@ MonoBehaviour:
   levelName: The Postoffice
   difficulty: 0
   sequences:
-  - pattern: 000000000000000000000000
+  - pattern: 00000000000000000100000002000000
     moveDuration: 0.4
-  - pattern: 000000000000000000000000
-    moveDuration: 0.3
-  - pattern: 000000000000000000000000
-    moveDuration: 0.8
+  - pattern: 00000000000000000000000002000000
+    moveDuration: 0.4
+  - pattern: 00000000000000000000000002000000
+    moveDuration: 0.4
+  - pattern: 02000000000000000000000002000000
+    moveDuration: 0.4
+  - pattern: 00000000020000000000000002000000
+    moveDuration: 0.4
+  - pattern: 00000000020000000000000002000000
+    moveDuration: 0.4
+  - pattern: 00000000010000000000000001000000
+    moveDuration: 0.4
+  - pattern: 00000000000000000000000001000000
+    moveDuration: 0.4
+  - pattern: 00000000010000000000000001000000
+    moveDuration: 0.4
+  - pattern: 02000000010000000200000001000000
+    moveDuration: 0.4
+  - pattern: 02000000010000000000000001000000
+    moveDuration: 0.5

@@ -12,6 +12,7 @@ public class TimingManager : MonoBehaviour
     [Header("Settings")]
     [Tooltip("Stamped version of the envelope (for player phase).")]
     public Sprite stampedEnvelopeSprite;
+    public Sprite stampedEnvelopeBlue;
     [Tooltip("Delay before swapping to stamped version (seconds).")]
     public float stampDelay = 0.3f;
 
@@ -27,7 +28,7 @@ public class TimingManager : MonoBehaviour
             {
                 Envelope envelopeToHit = activeEnvelopesInZone[0];
 
-                if (envelopeToHit != null && envelopeToHit.noteType == NoteType.Tap)
+                if (envelopeToHit != null && envelopeToHit.noteType == NoteType.Tap || envelopeToHit.noteType == NoteType.HalfTap)
                 {
                     Debug.Log("HIT on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteHit();
@@ -83,11 +84,28 @@ public class TimingManager : MonoBehaviour
     {
         yield return new WaitForSeconds(stampDelay);
 
-        if (stampedEnvelopeSprite != null)
+        if (stampedEnvelopeSprite != null && stampedEnvelopeBlue != null)
         {
             var sr = env.GetComponent<SpriteRenderer>();
             if (sr != null)
-                sr.sprite = stampedEnvelopeSprite;
+            {
+
+                if (env.noteType == NoteType.Tap)
+                {
+                    sr.sprite = stampedEnvelopeSprite;
+                    Debug.Log("Hallo");
+                }
+
+
+                else if (env.noteType == NoteType.HalfTap)
+                {
+                    sr.sprite = stampedEnvelopeBlue;
+                    Debug.Log("Hallo");
+                }
+
+            }
+
+
         }
     }
 }
