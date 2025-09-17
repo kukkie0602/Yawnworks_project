@@ -57,9 +57,7 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             var seq = levelData.sequences[sequenceIndex];
 
-            float totalTravelTime = envelopePositions.Length * seq.moveDuration;
-
-            float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor + 0.05f;
+            float spacing = MoveSpeed(seq);
 
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
 
@@ -74,12 +72,14 @@ public class EnvelopeConveyor : MonoBehaviour
     
     public IEnumerator PlayExamplePhase(EnvelopeSequence seq)
     {
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, 0.5f));
+        float spacing = MoveSpeed(seq);
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
     }
 
     public IEnumerator PlayPlayerPhase(EnvelopeSequence seq)
     {
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, 0.5f));
+        float spacing = MoveSpeed(seq);
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, spacing));
     }
 
     IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float spacing)
@@ -166,5 +166,12 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             activeEnvelopes.Remove(envelope);
         }
+    }
+
+    public float MoveSpeed(EnvelopeSequence seq)
+    {
+        float totalTravelTime = envelopePositions.Length * seq.moveDuration;
+        float spacing = (totalTravelTime / seq.pattern.Length) * spacingFactor + 0.05f;
+        return spacing;
     }
 }
