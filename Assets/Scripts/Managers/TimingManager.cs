@@ -28,20 +28,19 @@ public class TimingManager : MonoBehaviour
             {
                 Envelope envelopeToHit = activeEnvelopesInZone[0];
 
-                if (envelopeToHit != null && envelopeToHit.noteType == NoteType.Tap || envelopeToHit.noteType == NoteType.HalfTap)
+                if (envelopeToHit != null && (envelopeToHit.noteType == NoteType.Tap || envelopeToHit.noteType == NoteType.HalfTap))
                 {
                     Debug.Log("HIT on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteHit();
 
                     if (armsController != null)
                     {
-                        float defaultAnimationDuration = 0.3f;
+                        const float defaultAnimationDuration = 0.3f;
                         float speedMultiplier = defaultAnimationDuration / envelopeToHit.moveDuration;
                         armsController.PlayArmsAnimation(speedMultiplier);
                     }
-                        
 
-                    StartCoroutine(SwapSprite(envelopeToHit));
+                    TriggerSpriteSwap(envelopeToHit);
                     envelopeToHit.needsStampSwap = false;
 
                     conveyor.ProcessSuccessfulAction(envelopeToHit.gameObject);
@@ -79,33 +78,29 @@ public class TimingManager : MonoBehaviour
             activeEnvelopesInZone.Remove(env);
         }
     }
+    public void TriggerSpriteSwap(Envelope env)
+    {
+        StartCoroutine(SwapSprite(env));
+    }
 
     private IEnumerator SwapSprite(Envelope env)
     {
-        yield return new WaitForSeconds(stampDelay);
+        yield return new WaitForSeconds(env.moveDuration);
 
         if (stampedEnvelopeSprite != null && stampedEnvelopeBlue != null)
         {
             var sr = env.GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-
                 if (env.noteType == NoteType.Tap)
                 {
                     sr.sprite = stampedEnvelopeSprite;
-                    Debug.Log("Hallo");
                 }
-
-
                 else if (env.noteType == NoteType.HalfTap)
                 {
                     sr.sprite = stampedEnvelopeBlue;
-                    Debug.Log("Hallo");
                 }
-
             }
-
-
         }
     }
 }

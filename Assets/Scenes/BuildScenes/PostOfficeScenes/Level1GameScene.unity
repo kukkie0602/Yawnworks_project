@@ -1851,6 +1851,7 @@ MonoBehaviour:
   pointsPerNote: 100
   scoreText: {fileID: 386910288}
   comboText: {fileID: 900654769}
+  currentLevel: {fileID: 11400000, guid: 9d698025b4cf8af48a6ec7bb01034d2e, type: 2}
   scoreDisplayEnabled: 1
 --- !u!4 &695369577
 Transform:
