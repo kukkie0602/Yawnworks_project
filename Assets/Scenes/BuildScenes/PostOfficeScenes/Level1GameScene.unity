@@ -2781,7 +2781,7 @@ MonoBehaviour:
   pauseMenuPanel: {fileID: 849628135}
   volumeSlider: {fileID: 1869893403}
   pauseMenuButton: {fileID: 1252520128}
-  scoreManager: {fileID: 0}
+  scoreManager: {fileID: 695369576}
   mainMixer: {fileID: 24100000, guid: 4a9ed6f3a13c4c3409cda99b8caeedef, type: 2}
   musicSource: {fileID: 1041615260}
 --- !u!4 &1299340536
