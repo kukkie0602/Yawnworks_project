@@ -10,19 +10,25 @@ public class EnvelopeConveyor : MonoBehaviour
 
     [Header("Level Data")]
     public EnvelopeLevel levelData;
+
     [Header("UI References")]
     public ArmsController armsController;
     public TimingManager timingManager;
+
+    [Header("BPM Synchronization")]
+    [Tooltip("The index in envelopePositions that aligns with the center of the hit zone.")]
+    public int hitZonePositionIndex = 4; 
+    [Tooltip("How many beats it should take for an envelope to travel from spawn to the hit zone.")]
+    public float beatsToHitZone = 4f;
 
     [Header("Prefabs & References")]
     public Transform[] envelopePositions;
     [Range(0.1f, 2f)]
     public float spacingFactor = 0.5f;
-    public float moveDuration = 0.1f;
-    public float envelopeDistance = 0.62f;
     public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
     public Animator armsAnimator;
+
     private Dictionary<NoteType, GameObject> envelopePrefabDict;
     private List<GameObject> activeEnvelopes = new List<GameObject>();
 
@@ -53,36 +59,49 @@ public class EnvelopeConveyor : MonoBehaviour
 
     IEnumerator PlaySequenceCoroutine()
     {
+        if (levelData.beatsPerMinute <= 0)
+        {
+            Debug.LogError("BPM must be greater than 0!");
+            yield break;
+        }
+        if (hitZonePositionIndex <= 0)
+        {
+            Debug.LogError("Hit Zone Position Index must be greater than 0!");
+            yield break;
+        }
+
+        float beatInterval = 60f / levelData.beatsPerMinute;
+        float totalTravelTime = beatsToHitZone * beatInterval;
+        float dynamicMoveDuration = totalTravelTime / hitZonePositionIndex;
+
         while (sequenceIndex < levelData.sequences.Length)
         {
             var seq = levelData.sequences[sequenceIndex];
+            timingManager.playerInputEnabled = true;
 
-            float spacing = MoveSpeed(seq);
-
-            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
-
-            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, spacing));
+            yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, beatInterval, dynamicMoveDuration));
 
             sequenceIndex++;
         }
+
         timingManager.playerInputEnabled = false;
         Debug.Log("Level Complete!");
     }
 
-    
+
     public IEnumerator PlayExamplePhase(EnvelopeSequence seq)
     {
         float spacing = MoveSpeed(seq);
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing));
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: true, spacing, seq.moveDuration));
     }
 
     public IEnumerator PlayPlayerPhase(EnvelopeSequence seq)
     {
         float spacing = MoveSpeed(seq);
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, spacing));
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, spacing, seq.moveDuration));
     }
 
-    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float spacing)
+    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float interval, float moveDur)
     {
         activeEnvelopes.Clear();
 
@@ -94,28 +113,25 @@ public class EnvelopeConveyor : MonoBehaviour
             {
                 GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
                 env.GetComponent<Envelope>().noteType = type;
-                env.GetComponent<Envelope>().moveDuration = seq.moveDuration;
+                env.GetComponent<Envelope>().moveDuration = moveDur; 
                 activeEnvelopes.Add(env);
 
                 if (autoStamp)
                     env.GetComponent<Envelope>().needsStampSwap = true;
 
-                StartCoroutine(MoveEnvelopeAlongConveyor(env, seq.moveDuration));
+                StartCoroutine(MoveEnvelopeAlongConveyor(env, moveDur)); 
             }
 
-            yield return new WaitForSeconds(spacing);
+            yield return new WaitForSeconds(interval);
         }
-
-        while (activeEnvelopes.Count > 0)
-            yield return null;
     }
 
 
     IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, float moveDuration)
     {
-        for (int posIndex = 0; posIndex < envelopePositions.Length; posIndex++)
+        for (int posIndex = 1; posIndex < envelopePositions.Length; posIndex++)
         {
-            Vector3 startPos = envelope.transform.position;
+            Vector3 startPos = envelopePositions[posIndex - 1].position;
             Vector3 endPos = envelopePositions[posIndex].position;
 
             float elapsed = 0f;
@@ -157,7 +173,6 @@ public class EnvelopeConveyor : MonoBehaviour
 
     public void ProcessSuccessfulAction(GameObject envelope)
     {
-        // Stamp the envelope (visual feedback)
         Envelope e = envelope.GetComponent<Envelope>();
         StampEnvelope(envelope, e.moveDuration);
 

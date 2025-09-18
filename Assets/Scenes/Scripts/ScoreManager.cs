@@ -9,6 +9,7 @@ public class ScoreManager : MonoBehaviour
     private int comboCount = 0;
     private int maxCombo = 12;
     private int missesThisAttempt = 0;
+    private int hitsThisAttempt = 0;
 
     [Header("UI Elements")]
     public TMP_Text scoreText;  
@@ -34,7 +35,8 @@ public class ScoreManager : MonoBehaviour
         if (comboCount < maxCombo)
             comboCount++;
 
-        currentScore += pointsPerNote * comboCount;  
+        currentScore += pointsPerNote * comboCount;
+        hitsThisAttempt++;
 
         UpdateDisplay();
     }
@@ -46,9 +48,10 @@ public class ScoreManager : MonoBehaviour
         UpdateDisplay();
     }
 
-    public void ResetMissesForAttempt()
+    public void ResetAttemptStats()
     {
         missesThisAttempt = 0;
+        hitsThisAttempt = 0;
     }
 
     public int GetMissesThisAttempt()
@@ -56,11 +59,16 @@ public class ScoreManager : MonoBehaviour
         return missesThisAttempt;
     }
 
+    public int GetHitsThisAttempt()
+    {
+        return hitsThisAttempt;
+    }
+
     public void ResetScore()
     {
-        currentScore = 0;  
-        comboCount = 0;  
-        ResetMissesForAttempt();
+        currentScore = 0;
+        comboCount = 0;
+        ResetAttemptStats();
         UpdateDisplay();
     }
 

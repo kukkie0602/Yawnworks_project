@@ -50,23 +50,25 @@ public class TutorialManager : MonoBehaviour
         {
             instructionText.text = "Look and learn the rhythm...";
             progressText.text = $"Succes: {currentSuccesses} / {targetSuccesses}";
-
-            timingManager.playerInputEnabled = false; 
-
-            yield return new WaitForSeconds(1.5f);
+            timingManager.playerInputEnabled = false;
+            yield return new WaitForSeconds(2.5f);
             yield return StartCoroutine(envelopeConveyor.PlayExamplePhase(tutorialSequence));
 
+            instructionText.text = "Get Ready...";
+            yield return new WaitForSeconds(2.5f);
+
             instructionText.text = "Your turn! Play the rhythm.";
-            scoreManager.ResetMissesForAttempt();
-
-            timingManager.playerInputEnabled = true; 
-
-            yield return new WaitForSeconds(0.5f);
+            scoreManager.ResetAttemptStats(); 
+            timingManager.playerInputEnabled = true;
             yield return StartCoroutine(envelopeConveyor.PlayPlayerPhase(tutorialSequence));
 
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(2f);
 
-            if (scoreManager.GetMissesThisAttempt() == 0)
+            int hits = scoreManager.GetHitsThisAttempt();
+            int misses = scoreManager.GetMissesThisAttempt();
+            int requiredHits = tutorialSequence.pattern.Length;
+
+            if (misses == 0 && hits == requiredHits)
             {
                 currentSuccesses++;
                 instructionText.text = "Well done!";
