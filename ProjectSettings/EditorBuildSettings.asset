@@ -6,16 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainMenuScene.unity
+    path: Assets/Scenes/BuildScenes/StartScenes/MainMenuScene.unity
     guid: 868d2d741a36eec46a5235004edeec4c
   - enabled: 1
-    path: Assets/Scenes/LevelSelectorScene.unity
+    path: Assets/Scenes/BuildScenes/StartScenes/LevelSelectorScene.unity
     guid: 2930452049b516e40a8d1c2ea255c2c1
   - enabled: 1
-    path: Assets/Scenes/TutorialGameScene.unity
+    path: Assets/Scenes/BuildScenes/PostOfficeScenes/TutorialGameScene.unity
     guid: f6185d14ca9c3c046aaa1a23f78499a1
   - enabled: 1
-    path: Assets/Scenes/Level1GameScene.unity
+    path: Assets/Scenes/BuildScenes/PostOfficeScenes/Level1GameScene.unity
     guid: cfddb39673124924cb83e53a15407164
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 14dfcd557463c1b438b6eb9ae37b02be, type: 2}

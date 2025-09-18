@@ -83,8 +83,6 @@ public class EnvelopeConveyor : MonoBehaviour
 
             sequenceIndex++;
         }
-
-        timingManager.playerInputEnabled = false;
         Debug.Log("Level Complete!");
     }
 
