@@ -23,6 +23,7 @@ public class EndGamePanel : MonoBehaviour
     {
         endGamePanel.SetActive(true);
         scoreManager.disableScoreDisplay();
+        scoreManager.CheckForHighScore();
         if (scoreManager != null && finalScoreText != null)
         {
             finalScoreText.text = scoreManager.GetCurrentScore().ToString("D6");

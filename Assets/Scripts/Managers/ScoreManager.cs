@@ -15,6 +15,9 @@ public class ScoreManager : MonoBehaviour
     public TMP_Text scoreText;  
     public TMP_Text comboText;  
 
+    [Header("Level Info")]
+    public EnvelopeLevel currentLevel;
+
     public bool scoreDisplayEnabled = true;
     void Start()
     {
@@ -123,13 +126,13 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    public void CheckForHighScore(EnvelopeLevel beatmap)
+    public void CheckForHighScore()
     {
-        if (beatmap == null) return;  
+        if (currentLevel == null) return;  
 
         HighScoresData highScores = SaveSystem.LoadHighScores();
 
-        int levelIndex = highScores.levelNames.IndexOf(beatmap.name);  
+        int levelIndex = highScores.levelNames.IndexOf(currentLevel.name);  
 
         if (levelIndex != -1)
         {
@@ -140,7 +143,7 @@ public class ScoreManager : MonoBehaviour
         }
         else
         {
-            highScores.levelNames.Add(beatmap.name);
+            highScores.levelNames.Add(currentLevel.name);
             highScores.scores.Add(currentScore);
         }
 
