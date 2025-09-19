@@ -27,23 +27,24 @@ public class TimingManager : MonoBehaviour
             if (activeEnvelopesInZone.Count > 0)
             {
                 Envelope envelopeToHit = activeEnvelopesInZone[0];
-
+                if (armsController != null)
+                {
+                    armsController.PlayArmsAnimation(1f);
+                }
                 if (envelopeToHit != null && (envelopeToHit.noteType == NoteType.Tap || envelopeToHit.noteType == NoteType.HalfTap))
                 {
                     Debug.Log("HIT on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteHit();
-
-                    if (armsController != null)
-                    {
-                        const float defaultAnimationDuration = 0.3f;
-                        float speedMultiplier = defaultAnimationDuration / envelopeToHit.moveDuration;
-                        armsController.PlayArmsAnimation(speedMultiplier);
-                    }
-
                     TriggerSpriteSwap(envelopeToHit);
                     envelopeToHit.needsStampSwap = false;
 
                     conveyor.ProcessSuccessfulAction(envelopeToHit.gameObject);
+                    activeEnvelopesInZone.Remove(envelopeToHit);
+                }
+                else if (envelopeToHit != null && (envelopeToHit.noteType == NoteType.TapStamped || envelopeToHit.noteType == NoteType.HalfTapStamped))
+                {
+                    Debug.Log("Faulty Hit on envelope: " + envelopeToHit.noteType);
+                    scoreManager.OnNoteMiss();
                     activeEnvelopesInZone.Remove(envelopeToHit);
                 }
             }
@@ -58,6 +59,7 @@ public class TimingManager : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Envelope env = other.GetComponent<Envelope>();
+        if(env.noteType == NoteType.SkipOne) return;
         if (env != null && !activeEnvelopesInZone.Contains(env))
         {
             activeEnvelopesInZone.Add(env);
@@ -68,16 +70,27 @@ public class TimingManager : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         Envelope env = other.GetComponent<Envelope>();
-        if (env != null && activeEnvelopesInZone.Contains(env))
+        if (env == null) return;
+
+        if (!activeEnvelopesInZone.Contains(env)) return; 
+
+        if (playerInputEnabled)
         {
-            if (playerInputEnabled)
+            bool isStamped = env.noteType == NoteType.HalfTapStamped || env.noteType == NoteType.TapStamped;
+
+            if (isStamped)
+            {
+                Debug.Log("Passed! (Pressed too late)");
+            }
+            else
             {
                 Debug.Log("MISS! (Pressed too late)");
                 scoreManager.OnNoteMiss();
             }
-            activeEnvelopesInZone.Remove(env);
         }
+        activeEnvelopesInZone.Remove(env);
     }
+
     public void TriggerSpriteSwap(Envelope env)
     {
         StartCoroutine(SwapSprite(env));

@@ -14,9 +14,7 @@ public class StampTriggerZone : MonoBehaviour
         {
             if (armsController != null)
             {
-                const float defaultAnimationDuration = 0.3f;
-                float speedMultiplier = defaultAnimationDuration / env.moveDuration;
-                armsController.PlayArmsAnimation(speedMultiplier);
+                armsController.PlayArmsAnimation(1f);
             }
 
             if (timingManager != null)

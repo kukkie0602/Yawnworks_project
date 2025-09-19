@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6755807107861261698}
   - component: {fileID: 44084425201899103}
-  - component: {fileID: 5640856153934995903}
   - component: {fileID: -1777913705179553300}
   - component: {fileID: -3879970127004013576}
+  - component: {fileID: 6028503389632742818}
   m_Layer: 3
   m_Name: StampedEnvelopeBlue
   m_TagString: Untagged
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.6752057, y: -1.398819, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -93,22 +93,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5640856153934995903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5391714462202279252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e772c3a75f3b3cb428c62e0193b456a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Envelope
-  noteType: 1
-  needsStampSwap: 0
-  animator: {fileID: 0}
-  moveDuration: 0
 --- !u!50 &-1777913705179553300
 Rigidbody2D:
   serializedVersion: 5
@@ -182,3 +166,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.97, y: 2.82}
   m_EdgeRadius: 0
+--- !u!114 &6028503389632742818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5391714462202279252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e772c3a75f3b3cb428c62e0193b456a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Envelope
+  noteType: 4
+  needsStampSwap: 0
+  animator: {fileID: 0}
+  moveDuration: 0

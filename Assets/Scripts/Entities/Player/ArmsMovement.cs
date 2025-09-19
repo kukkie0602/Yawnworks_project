@@ -8,7 +8,7 @@ public class ArmsController : MonoBehaviour
     {
         if (armsAnimator != null)
         {
-            armsAnimator.SetFloat("StampSpeed", speedMultiplier*2.2f);
+            armsAnimator.SetFloat("StampSpeed", speedMultiplier*3f);
             armsAnimator.SetTrigger("PlayArms");
         }
     }
