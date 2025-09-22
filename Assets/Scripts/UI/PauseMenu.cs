@@ -79,6 +79,12 @@ public class PauseMenu : MonoBehaviour
         SaveSystem.SaveSettings(settingsData);
     }
 
+    public void RetryLevel()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
     public void QuitToMainMenu()
     {
         Time.timeScale = 1f;

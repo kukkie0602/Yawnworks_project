@@ -90,8 +90,6 @@ public class TutorialManager : MonoBehaviour
             endGamePanel.End();
         }
 
-        endGamePanel.finalScoreText.text = progressText.text;
-        endGamePanel.endGameMessageText.text = instructionText.text;
         tutorialImage.gameObject.SetActive(false);
     }
 }
