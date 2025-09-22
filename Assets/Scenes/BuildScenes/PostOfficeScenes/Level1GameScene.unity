@@ -865,7 +865,6 @@ MonoBehaviour:
   - {fileID: 902065895}
   - {fileID: 677353333}
   - {fileID: 977278064}
-  spacingFactor: 0.5
   stampedEnvelopePrefab: {fileID: 3879698585123424553, guid: e6734ada3854fa945b959a7e9c7f2662, type: 3}
   noteMappings:
   - noteType: 0
@@ -1074,7 +1073,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 599e381383a127b4e8a331af71ca0bd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EndGamePanel
-  finalScoreText: {fileID: 1392359669}
+  ScoreNumber: {fileID: 0}
+  HitNumber: {fileID: 0}
+  MissNumber: {fileID: 0}
+  ComboNumber: {fileID: 0}
   scoreManager: {fileID: 695369576}
   currentScoreText: {fileID: 386910288}
   endGamePanel: {fileID: 652969071}
@@ -2461,8 +2463,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 196, y: -349}
-  m_SizeDelta: {x: 450, y: 450}
+  m_AnchoredPosition: {x: 306, y: -200}
+  m_SizeDelta: {x: 800, y: 800}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1100402129
 MonoBehaviour:
@@ -4117,7 +4119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3356191528722176585, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 3356191528722176585, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
       propertyPath: m_LocalPosition.z
