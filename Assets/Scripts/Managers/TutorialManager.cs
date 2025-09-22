@@ -48,16 +48,16 @@ public class TutorialManager : MonoBehaviour
     {
         while (currentSuccesses < targetSuccesses)
         {
-            instructionText.text = "Look and learn the rhythm...";
-            progressText.text = $"Succes: {currentSuccesses} / {targetSuccesses}";
+            instructionText.text = "Look and <color=#C14520>learn</color> the rhythm...";
+            progressText.text = $"{currentSuccesses} / {targetSuccesses}";
             timingManager.playerInputEnabled = false;
             yield return new WaitForSeconds(2.5f);
             yield return StartCoroutine(envelopeConveyor.PlayExamplePhase(tutorialSequence));
 
-            instructionText.text = "Get Ready...";
+            instructionText.text = "Get <color=#C14520>ready</color> its your turn!";
             yield return new WaitForSeconds(2.5f);
 
-            instructionText.text = "Your turn! Play the rhythm.";
+            instructionText.text = "<color=#C14520>Tap</color> the rhythm.";
             scoreManager.ResetAttemptStats(); 
             timingManager.playerInputEnabled = true;
             yield return StartCoroutine(envelopeConveyor.PlayPlayerPhase(tutorialSequence));
@@ -83,7 +83,7 @@ public class TutorialManager : MonoBehaviour
 
         timingManager.playerInputEnabled = false;
         instructionText.text = "Tutorial completed!";
-        progressText.text = $"Succes: {currentSuccesses} / {targetSuccesses}";
+        progressText.text = $"{currentSuccesses} / {targetSuccesses}";
 
         if (endGamePanel != null)
         {
