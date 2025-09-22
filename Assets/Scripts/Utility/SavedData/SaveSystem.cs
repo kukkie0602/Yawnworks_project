@@ -41,6 +41,11 @@ public static class SaveSystem
         {
             string json = File.ReadAllText(path);
             HighScoresData data = JsonUtility.FromJson<HighScoresData>(json);
+
+            if (data == null)
+            {
+                data = new HighScoresData();
+            }
             return data;
         }
         else

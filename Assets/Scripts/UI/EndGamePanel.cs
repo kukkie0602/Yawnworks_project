@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -9,9 +10,11 @@ public class EndGamePanel : MonoBehaviour
     public TMP_Text MissNumber;
     public TMP_Text ComboNumber;
     public ScoreManager scoreManager;
-    public TMP_Text currentScoreText;
     public GameObject endGamePanel;
-    public TMP_Text endGameMessageText;
+    public Image[] coins;
+    public Color earnedCoinColor = Color.yellow;
+    public Color unearnedCoinColor = Color.grey;
+
     public void GoToMainMenu()
     {
         SceneManager.LoadScene("MainMenuScene");
@@ -27,6 +30,7 @@ public class EndGamePanel : MonoBehaviour
         endGamePanel.SetActive(true);
         scoreManager.disableScoreDisplay();
         scoreManager.CheckForHighScore();
+        UpdateCoinDisplay(scoreManager.CalculateCoins());
         if (scoreManager != null && ScoreNumber != null)
         {
             ScoreNumber.text = scoreManager.GetCurrentScore().ToString("D6");
@@ -50,6 +54,21 @@ public class EndGamePanel : MonoBehaviour
         if (endGamePanel != null)
         {
             endGamePanel.SetActive(false);
+        }
+    }
+
+    public void UpdateCoinDisplay(int coinsEarned)
+    {
+        for (int i = 0; i < coins.Length; i++)
+        {
+            if (i < coinsEarned)
+            {
+                coins[i].color = earnedCoinColor;
+            }
+            else
+            {
+                coins[i].color = unearnedCoinColor;
+            }
         }
     }
 }

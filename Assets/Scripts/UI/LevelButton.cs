@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class LevelButton : MonoBehaviour
@@ -16,6 +17,10 @@ public class LevelButton : MonoBehaviour
 
     [Tooltip("The Text element that will display the difficulty level.")]
     public TMP_Text difficultyText;
+
+    public Image[] coins;
+    public Color earnedCoinColor = Color.yellow;
+    public Color unearnedCoinColor = Color.grey;
 
     void Start()
     {
@@ -45,15 +50,38 @@ public class LevelButton : MonoBehaviour
         {
             HighScoresData highScores = SaveSystem.LoadHighScores();
 
+            while (highScores.coins.Count < highScores.levelNames.Count)
+            {
+                highScores.coins.Add(0); 
+            }
+
             int levelIndex = highScores.levelNames.IndexOf(associatedLevel.name);
             int score = 0;
+            int coinsEarned = 0;
 
             if (levelIndex != -1)
             {
                 score = highScores.scores[levelIndex];
+                coinsEarned = highScores.coins[levelIndex]; 
             }
 
             highScoreText.text = "High Score: " + score.ToString("D6");
+            UpdateCoinDisplay(coinsEarned);
+        }
+    }
+
+    public void UpdateCoinDisplay(int coinsEarned)
+    {
+        for (int i = 0; i < coins.Length; i++)
+        {
+            if (i < coinsEarned)
+            {
+                coins[i].color = earnedCoinColor;
+            }
+            else
+            {
+                coins[i].color = unearnedCoinColor;
+            }
         }
     }
 }
