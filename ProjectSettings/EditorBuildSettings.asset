@@ -9,7 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/BuildScenes/StartScenes/MainMenuScene.unity
     guid: 868d2d741a36eec46a5235004edeec4c
   - enabled: 1
-    path: Assets/Scenes/BuildScenes/StartScenes/LevelSelectorScene.unity
+    path: Assets/Scenes/BuildScenes/StartScenes/LevelSelectScene.unity
+    guid: 0fabb08f36ef9a4439aaeb9f55e87872
+  - enabled: 1
+    path: Assets/Scenes/BuildScenes/StartScenes/PostOfficeLevelsScene.unity
     guid: 2930452049b516e40a8d1c2ea255c2c1
   - enabled: 1
     path: Assets/Scenes/BuildScenes/PostOfficeScenes/TutorialGameScene.unity

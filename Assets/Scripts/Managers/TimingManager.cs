@@ -59,7 +59,8 @@ public class TimingManager : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Envelope env = other.GetComponent<Envelope>();
-        if(env.noteType == NoteType.SkipOne) return;
+        if (env == null) return;
+        if (env.noteType == NoteType.SkipOne) return;
         if (env != null && !activeEnvelopesInZone.Contains(env))
         {
             activeEnvelopesInZone.Add(env);

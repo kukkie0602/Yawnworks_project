@@ -11,6 +11,9 @@ public class ScoreManager : MonoBehaviour
     private int missesThisAttempt = 0;
     private int hitsThisAttempt = 0;
 
+    private int totalNotesHit = 0;
+    private int totalNotesMissed = 0;
+
     [Header("UI Elements")]
     public TMP_Text scoreText;  
     public TMP_Text comboText;  
@@ -40,14 +43,15 @@ public class ScoreManager : MonoBehaviour
 
         currentScore += pointsPerNote * comboCount;
         hitsThisAttempt++;
-
+        totalNotesHit++;
         UpdateDisplay();
     }
 
     public void OnNoteMiss()
     {
-        comboCount = 0;  
+        comboCount = 0;
         missesThisAttempt++;
+        totalNotesMissed++; 
         UpdateDisplay();
     }
 
@@ -66,6 +70,22 @@ public class ScoreManager : MonoBehaviour
     {
         return hitsThisAttempt;
     }
+
+    public int GetTotalNotesHit()
+    {
+        return totalNotesHit;
+    }
+
+    public int GetTotalNotesMissed()
+    {
+        return totalNotesMissed;
+    }
+
+    public int GetComboCount()
+    {
+        return comboCount;
+    }
+
 
     public void ResetScore()
     {

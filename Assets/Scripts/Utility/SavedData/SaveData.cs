@@ -3,7 +3,12 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SettingsData
 {
-    public float musicVolume = 1f;
+    public float musicVolume;
+
+    public SettingsData()
+    {
+        musicVolume = 1f;
+    }
 }
 
 [System.Serializable]

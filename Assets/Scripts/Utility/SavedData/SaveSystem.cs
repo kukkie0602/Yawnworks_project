@@ -3,26 +3,22 @@ using System.IO;
 
 public static class SaveSystem
 {
-    private static readonly string SETTINGS_FILE_NAME = "/settings.json";
+    private static readonly string SETTINGS_FILE_NAME = "/settings.dat";
     private static readonly string HIGHSCORES_FILE_NAME = "/highscores.json";
 
 
     public static void SaveSettings(SettingsData data)
     {
         string path = Application.persistentDataPath + SETTINGS_FILE_NAME;
-        string json = JsonUtility.ToJson(data, true);
-        File.WriteAllText(path, json);
-        Debug.Log("Settings saved to: " + path);
+        System.IO.File.WriteAllText(path, JsonUtility.ToJson(data));
     }
 
     public static SettingsData LoadSettings()
     {
         string path = Application.persistentDataPath + SETTINGS_FILE_NAME;
-        if (File.Exists(path))
+        if (System.IO.File.Exists(path))
         {
-            string json = File.ReadAllText(path);
-            SettingsData data = JsonUtility.FromJson<SettingsData>(json);
-            return data;
+            return JsonUtility.FromJson<SettingsData>(System.IO.File.ReadAllText(path));
         }
         else
         {
