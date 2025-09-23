@@ -99,7 +99,7 @@ public class TimingManager : MonoBehaviour
 
     private IEnumerator SwapSprite(Envelope env)
     {
-        yield return new WaitForSeconds(env.moveDuration);
+        yield return new WaitForSeconds(0.45f);
 
         if (stampedEnvelopeSprite != null && stampedEnvelopeBlue != null)
         {
