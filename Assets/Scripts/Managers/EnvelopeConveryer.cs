@@ -37,6 +37,7 @@ public class EnvelopeConveyor : MonoBehaviour
 
     void Start()
     {
+        FindObjectOfType<AudioManager>().PlayWithDelay(2.5);
         envelopePrefabDict = new Dictionary<NoteType, GameObject>();
         foreach (var mapping in noteMappings)
             envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;

@@ -2305,6 +2305,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1041615261}
   - component: {fileID: 1041615260}
+  - component: {fileID: 1041615262}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged
@@ -2323,8 +2324,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 4146320353214900101, guid: 4a9ed6f3a13c4c3409cda99b8caeedef, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 4def5f2a21f8b714c8c4d4788e5984da, type: 3}
-  m_PlayOnAwake: 1
+  m_Resource: {fileID: 8300000, guid: 56d77cd4e1f6fe74ab9bf2cc6d9a5021, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -2424,6 +2425,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1041615262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041615259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b191c09336c5aba479db6e9ef314e533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  musicSource: {fileID: 1041615260}
 --- !u!1 &1100402127
 GameObject:
   m_ObjectHideFlags: 0
@@ -2536,6 +2550,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   armsAnimator: {fileID: 1100402131}
+  armsAnimationStateName: ArmsAnimation
 --- !u!4 &1143249102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8710221653353220726, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
