@@ -2683,11 +2683,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 4146320353214900101, guid: 4a9ed6f3a13c4c3409cda99b8caeedef, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: f85f086e5f4d2ab48bf7f3f8bd920acf, type: 3}
-  m_PlayOnAwake: 0
+  m_Resource: {fileID: 8300000, guid: ceabd0123a9793543bb5f6e94a63616c, type: 3}
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -3048,6 +3048,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   armsAnimator: {fileID: 1100402131}
+  armsAnimationStateName: ArmsAnimation
 --- !u!4 &1143249102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8710221653353220726, guid: 8b9bbd5ea9602f44b8337b690d2b1aeb, type: 3}
