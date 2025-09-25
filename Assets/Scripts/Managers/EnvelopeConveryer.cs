@@ -29,7 +29,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public GameObject stampedEnvelopePrefab;
     public NotePrefabMapping[] noteMappings;
     public Animator armsAnimator;
-
+    public AudioManager audioManager;
     private Dictionary<NoteType, GameObject> envelopePrefabDict;
     private List<GameObject> activeEnvelopes = new List<GameObject>();
 
@@ -37,7 +37,7 @@ public class EnvelopeConveyor : MonoBehaviour
 
     void Start()
     {
-        FindObjectOfType<AudioManager>().PlayWithDelay(2.5);
+        audioManager.PlayWithDelay(1.4);
         envelopePrefabDict = new Dictionary<NoteType, GameObject>();
         foreach (var mapping in noteMappings)
             envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
