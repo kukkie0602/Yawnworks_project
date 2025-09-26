@@ -55,13 +55,12 @@ public class EnvelopeConveyor : MonoBehaviour
                 return;
             }
             StartCoroutine(PlaySequenceCoroutine());
-            audioManager.PlayWithDelay(0);
+            audioManager.PlayWithDelay(2.65);
         }
     }
 
     IEnumerator PlaySequenceCoroutine()
     {
-        yield return new WaitForSeconds(0.5f);
         if (levelData.beatsPerMinute <= 0)
         {
             Debug.LogError("BPM must be greater than 0!");
