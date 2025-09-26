@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class TimingManager : MonoBehaviour
 {
@@ -16,9 +17,16 @@ public class TimingManager : MonoBehaviour
     [Tooltip("Delay before swapping to stamped version (seconds).")]
     public float stampDelay = 0.3f;
 
+    [Header("StartUI")]
+    public Image countdown3Image;
+    public Image countdown2Image;
+    public Image countdown1Image;
+    public Image goImage;
+
     public bool playerInputEnabled = true;
 
     private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
+    private int skipNoteCounter = 0;
 
     void Update()
     {
@@ -60,7 +68,28 @@ public class TimingManager : MonoBehaviour
     {
         Envelope env = other.GetComponent<Envelope>();
         if (env == null) return;
-        if (env.noteType == NoteType.SkipOne) return;
+
+        if (env.noteType == NoteType.SkipOne)
+        {
+            if (skipNoteCounter < 4)
+            {
+                // Disable all images before showing the next one
+                countdown3Image.gameObject.SetActive(false);
+                countdown2Image.gameObject.SetActive(false);
+                countdown1Image.gameObject.SetActive(false);
+                goImage.gameObject.SetActive(false);
+
+                skipNoteCounter++;
+                env.skipNoteID = skipNoteCounter; // Assign a unique ID to this note
+
+                // Activate image based on the note's unique ID
+                if (env.skipNoteID == 1) countdown3Image.gameObject.SetActive(true);
+                else if (env.skipNoteID == 2) countdown2Image.gameObject.SetActive(true);
+                else if (env.skipNoteID == 3) countdown1Image.gameObject.SetActive(true);
+                else if (env.skipNoteID == 4) goImage.gameObject.SetActive(true);
+            }
+            return;
+        }
         if (env != null && !activeEnvelopesInZone.Contains(env))
         {
             activeEnvelopesInZone.Add(env);
@@ -73,7 +102,17 @@ public class TimingManager : MonoBehaviour
         Envelope env = other.GetComponent<Envelope>();
         if (env == null) return;
 
-        if (!activeEnvelopesInZone.Contains(env)) return; 
+        if (env.noteType == NoteType.SkipOne)
+        {
+            // Deactivate image based on the specific note's ID that is exiting
+            if (env.skipNoteID == 1) countdown3Image.gameObject.SetActive(false);
+            else if (env.skipNoteID == 2) countdown2Image.gameObject.SetActive(false);
+            else if (env.skipNoteID == 3) countdown1Image.gameObject.SetActive(false);
+            else if (env.skipNoteID == 4) goImage.gameObject.SetActive(false);
+            return;
+        }
+
+        if (!activeEnvelopesInZone.Contains(env)) return;
 
         if (playerInputEnabled)
         {

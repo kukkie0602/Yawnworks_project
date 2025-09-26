@@ -7,6 +7,6 @@ public class Envelope : MonoBehaviour
 
     [Header("Animator")]
     public Animator animator;
-
+    [HideInInspector] public int skipNoteID = 0;
     [HideInInspector] public float moveDuration;
 }
