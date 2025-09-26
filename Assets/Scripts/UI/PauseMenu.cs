@@ -11,6 +11,7 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenuButton;
 
     public ScoreManager scoreManager;
+    public EnvelopeConveyor envelopeConveyor;
 
     [Header("Audio")]
     public AudioMixer mainMixer;
@@ -50,8 +51,8 @@ public class PauseMenu : MonoBehaviour
         pauseMenuButton.SetActive(false);
 
         Time.timeScale = 0f;
-
         musicSource.Pause();
+        envelopeConveyor.Pause();
     }
 
     public void ResumeGame()
@@ -65,17 +66,14 @@ public class PauseMenu : MonoBehaviour
         pauseMenuButton.SetActive(true);
 
         Time.timeScale = 1f;
-
-
         musicSource.UnPause();
+        envelopeConveyor.Resume();
     }
 
     public void SetVolume(float volume)
     {
         mainMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
-
         settingsData.musicVolume = volume;
-
         SaveSystem.SaveSettings(settingsData);
     }
 

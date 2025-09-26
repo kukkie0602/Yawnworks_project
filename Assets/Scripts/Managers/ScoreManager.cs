@@ -35,7 +35,7 @@ public class ScoreManager : MonoBehaviour
     public EnvelopeLevel currentLevel;
 
     [Header("Feedback Container")]
-    public Transform feedbackContainer; // assign an empty GameObject under Canvas
+    public Transform feedbackContainer; 
 
     public bool scoreDisplayEnabled = true;
 
@@ -102,7 +102,6 @@ public class ScoreManager : MonoBehaviour
         UpdateDisplay(comboCount);
     }
 
-    // --- Spawn multiple independent feedbacks ---
     private void SpawnFeedback(bool isHit, float delay = 0f)
     {
         GameObject prefabToUse = isHit ? hitPrefab : missPrefab;
@@ -118,7 +117,7 @@ public class ScoreManager : MonoBehaviour
     private IEnumerator AnimateFeedback(GameObject feedbackGO, float delay)
     {
         if (delay > 0f)
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSecondsRealtime(delay);
 
         if (feedbackGO == null) yield break;
 
@@ -134,8 +133,8 @@ public class ScoreManager : MonoBehaviour
         while (elapsed < feedbackDuration)
         {
             if (feedbackGO == null) yield break;
+            elapsed += Time.unscaledDeltaTime;
 
-            elapsed += Time.deltaTime;
             float t = elapsed / feedbackDuration;
 
             feedbackGO.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(startPos, endPos, t);
@@ -169,7 +168,6 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    // --- Utility methods ---
     public int GetCurrentScore() => currentScore;
     public void disableScoreDisplay() { if (scoreText) scoreText.gameObject.SetActive(false); if (StreakImage) StreakImage.gameObject.SetActive(false); }
     public void enableScoreDisplay() { if (scoreText) scoreText.gameObject.SetActive(true); if (StreakImage) StreakImage.gameObject.SetActive(true); }
@@ -186,7 +184,6 @@ public class ScoreManager : MonoBehaviour
     {
         StopAllCoroutines();
 
-        // Destroy all remaining feedback prefabs
         if (feedbackContainer != null)
         {
             foreach (Transform child in feedbackContainer)

@@ -34,6 +34,24 @@ public class EnvelopeConveyor : MonoBehaviour
     private float beatInterval;
     private float moveDuration;
 
+    private bool isPaused = false;
+    private double pauseStartedTime = 0.0;
+    private double totalTimePaused = 0.0;
+    private double CurrentSongTime
+    {
+        get
+        {
+            if (isPaused)
+            {
+                return pauseStartedTime - totalTimePaused;
+            }
+            else
+            {
+                return AudioSettings.dspTime - totalTimePaused;
+            }
+        }
+    }
+
     void Start()
     {
         envelopePrefabDict = new Dictionary<NoteType, GameObject>();
@@ -42,36 +60,35 @@ public class EnvelopeConveyor : MonoBehaviour
 
         if (!isTutorialMode)
         {
-            if (levelData == null || levelData.sequences.Length == 0)
-            {
-                Debug.LogError("No level assigned or empty level data!");
-                return;
-            }
-            if (timingManager == null)
-            {
-                Debug.LogError("Timing Manager is not assigned in the EnvelopeConveyor!");
-                this.enabled = false;
-                return;
-            }
+            if (levelData == null || levelData.sequences.Length == 0) {  return; }
+            if (timingManager == null) {  return; }
 
             beatInterval = 60f / levelData.beatsPerMinute;
             float totalTravelTime = beatsToHitZone * beatInterval;
             moveDuration = totalTravelTime / hitZonePositionIndex;
 
-            // ENVELOPES START IMMEDIATELY
             songStartDspTime = AudioSettings.dspTime;
-
-            // Start spawning envelopes
             StartCoroutine(PlaySequenceCoroutine());
 
-            float totalTravelTimeToHitZone = moveDuration * hitZonePositionIndex;
-            float audioAdvance = 0.3f; // start audio 0.1 seconds earlier
-            double audioDspTime = AudioSettings.dspTime + totalTravelTimeToHitZone - audioAdvance;
+            double audioDspTime = AudioSettings.dspTime + (moveDuration * hitZonePositionIndex) - 0.3f;
             audioManager.PlayScheduled(audioDspTime);
         }
     }
 
+    public void Pause()
+    {
+        if (isPaused) return;
+        isPaused = true;
+        pauseStartedTime = AudioSettings.dspTime;
+    }
 
+    public void Resume()
+    {
+        if (!isPaused) return;
+        double pauseDuration = AudioSettings.dspTime - pauseStartedTime;
+        totalTimePaused += pauseDuration;
+        isPaused = false;
+    }
     IEnumerator PlaySequenceCoroutine()
     {
         while (sequenceIndex < levelData.sequences.Length)
@@ -104,19 +121,18 @@ public class EnvelopeConveyor : MonoBehaviour
     IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
     {
         activeEnvelopes.Clear();
-
         for (int i = 0; i < seq.pattern.Length; i++)
         {
             NoteType type = seq.pattern[i];
             double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
 
-            yield return new WaitUntil(() => AudioSettings.dspTime >= spawnTime);
+            yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
             SpawnEnvelope(type, autoStamp, spawnTime);
 
             if (type == NoteType.HalfTap || type == NoteType.HalfTapStamped)
             {
                 double halfSpawn = spawnTime + beatInterval / 2f;
-                yield return new WaitUntil(() => AudioSettings.dspTime >= halfSpawn);
+                yield return new WaitUntil(() => CurrentSongTime >= halfSpawn);
                 SpawnEnvelope(type, autoStamp, halfSpawn);
             }
         }
@@ -146,12 +162,11 @@ public class EnvelopeConveyor : MonoBehaviour
 
             double segmentStart = spawnTime + (posIndex - 1) * moveDuration;
             double segmentEnd = spawnTime + posIndex * moveDuration;
-
-            while (AudioSettings.dspTime < segmentEnd)
+            while (CurrentSongTime < segmentEnd)
             {
                 if (envelope == null) yield break;
 
-                float t = (float)((AudioSettings.dspTime - segmentStart) / (segmentEnd - segmentStart));
+                float t = (float)((CurrentSongTime - segmentStart) / (segmentEnd - segmentStart));
                 t = Mathf.Clamp01(t);
                 envelope.transform.position = Vector3.Lerp(startPos, endPos, t);
                 yield return null;

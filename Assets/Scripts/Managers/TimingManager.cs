@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class TimingManager : MonoBehaviour
 {
@@ -28,9 +29,10 @@ public class TimingManager : MonoBehaviour
     private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
     private int skipNoteCounter = 0;
 
+
     void Update()
     {
-        if (playerInputEnabled && Input.GetMouseButtonDown(0))
+        if (playerInputEnabled && Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             if (activeEnvelopesInZone.Count > 0)
             {
@@ -73,16 +75,13 @@ public class TimingManager : MonoBehaviour
         {
             if (skipNoteCounter < 4)
             {
-                // Disable all images before showing the next one
                 countdown3Image.gameObject.SetActive(false);
                 countdown2Image.gameObject.SetActive(false);
                 countdown1Image.gameObject.SetActive(false);
                 goImage.gameObject.SetActive(false);
 
                 skipNoteCounter++;
-                env.skipNoteID = skipNoteCounter; // Assign a unique ID to this note
-
-                // Activate image based on the note's unique ID
+                env.skipNoteID = skipNoteCounter;
                 if (env.skipNoteID == 1) countdown3Image.gameObject.SetActive(true);
                 else if (env.skipNoteID == 2) countdown2Image.gameObject.SetActive(true);
                 else if (env.skipNoteID == 3) countdown1Image.gameObject.SetActive(true);
@@ -104,7 +103,6 @@ public class TimingManager : MonoBehaviour
 
         if (env.noteType == NoteType.SkipOne)
         {
-            // Deactivate image based on the specific note's ID that is exiting
             if (env.skipNoteID == 1) countdown3Image.gameObject.SetActive(false);
             else if (env.skipNoteID == 2) countdown2Image.gameObject.SetActive(false);
             else if (env.skipNoteID == 3) countdown1Image.gameObject.SetActive(false);
@@ -138,7 +136,7 @@ public class TimingManager : MonoBehaviour
 
     private IEnumerator SwapSprite(Envelope env)
     {
-        yield return new WaitForSeconds(0.45f);
+        yield return new WaitForSecondsRealtime(0.45f);
 
         if (stampedEnvelopeSprite != null && stampedEnvelopeBlue != null)
         {
