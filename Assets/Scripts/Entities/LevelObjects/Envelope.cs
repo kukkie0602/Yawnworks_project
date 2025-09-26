@@ -8,6 +8,5 @@ public class Envelope : MonoBehaviour
     [Header("Animator")]
     public Animator animator;
 
-    [HideInInspector]
-    public float moveDuration;
+    [HideInInspector] public float moveDuration;
 }

@@ -4,12 +4,16 @@ public class AudioManager : MonoBehaviour
 {
     public AudioSource musicSource;
 
-    public void PlayWithDelay(double delaySeconds)
+    public void PlayScheduled(double dspStartTime)
+    {
+        if (musicSource == null) return;
+        musicSource.playOnAwake = false;
+        musicSource.PlayScheduled(dspStartTime);
+    }
+
+    public void Stop()
     {
         if (musicSource != null)
-        {
-            musicSource.playOnAwake = false;
-            musicSource.PlayScheduled(AudioSettings.dspTime + delaySeconds);
-        }
+            musicSource.Stop();
     }
 }
