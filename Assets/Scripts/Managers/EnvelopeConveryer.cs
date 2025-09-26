@@ -37,7 +37,6 @@ public class EnvelopeConveyor : MonoBehaviour
 
     void Start()
     {
-        audioManager.PlayWithDelay(1.4);
         envelopePrefabDict = new Dictionary<NoteType, GameObject>();
         foreach (var mapping in noteMappings)
             envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
@@ -56,11 +55,13 @@ public class EnvelopeConveyor : MonoBehaviour
                 return;
             }
             StartCoroutine(PlaySequenceCoroutine());
+            audioManager.PlayWithDelay(0);
         }
     }
 
     IEnumerator PlaySequenceCoroutine()
     {
+        yield return new WaitForSeconds(0.5f);
         if (levelData.beatsPerMinute <= 0)
         {
             Debug.LogError("BPM must be greater than 0!");
@@ -80,7 +81,6 @@ public class EnvelopeConveyor : MonoBehaviour
         {
             var seq = levelData.sequences[sequenceIndex];
             timingManager.playerInputEnabled = true;
-
             yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp: false, beatInterval, dynamicMoveDuration));
 
             sequenceIndex++;
@@ -116,7 +116,6 @@ public class EnvelopeConveyor : MonoBehaviour
     IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, float interval, float moveDur)
     {
         activeEnvelopes.Clear();
-
         for (int i = 0; i < seq.pattern.Length; i++)
         {
             NoteType type = seq.pattern[i];
