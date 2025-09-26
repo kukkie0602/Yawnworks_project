@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("LevelSelectScene");
+        SceneManager.LoadScene("BackstoryScene");
     }
 
     public void QuitGame()
