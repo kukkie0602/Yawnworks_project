@@ -26,18 +26,18 @@ public class EnvelopeConveyor : MonoBehaviour
     public Animator armsAnimator;
     public AudioManager audioManager;
 
-    private Dictionary<NoteType, GameObject> envelopePrefabDict;
-    private List<GameObject> activeEnvelopes = new List<GameObject>();
+    protected Dictionary<NoteType, GameObject> envelopePrefabDict;
+    protected List<GameObject> activeEnvelopes = new List<GameObject>();
 
-    private int sequenceIndex = 0;
-    private double songStartDspTime;
-    private float beatInterval;
+    protected int sequenceIndex = 0;
+    protected double songStartDspTime;
+    protected float beatInterval;
     private float moveDuration;
 
     private bool isPaused = false;
     private double pauseStartedTime = 0.0;
     private double totalTimePaused = 0.0;
-    private double CurrentSongTime
+    protected double CurrentSongTime
     {
         get
         {
@@ -118,7 +118,7 @@ public class EnvelopeConveyor : MonoBehaviour
         yield return StartCoroutine(SpawnAndAnimateSequence(seq, false));
     }
 
-    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
+    protected virtual IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
     {
         activeEnvelopes.Clear();
         for (int i = 0; i < seq.pattern.Length; i++)
@@ -182,7 +182,7 @@ public class EnvelopeConveyor : MonoBehaviour
         activeEnvelopes.Remove(envelope);
     }
 
-    void StampEnvelope(GameObject env, float moveDuration)
+    public void StampEnvelope(GameObject env, float moveDuration)
     {
         Envelope e = env.GetComponent<Envelope>();
         if (e != null && e.needsStampSwap && armsController != null)
@@ -192,7 +192,7 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
-    public void ProcessSuccessfulAction(GameObject envelope)
+    public virtual void ProcessSuccessfulAction(GameObject envelope)
     {
         Envelope e = envelope.GetComponent<Envelope>();
         StampEnvelope(envelope, e.moveDuration);
