@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class EnvelopeConveyor : MonoBehaviour
 {
-    [Header("Mode")]
-    public bool isTutorialMode = false;
-
-    [Header("Level Data")]
-    public EnvelopeLevel levelData;
-
     [Header("UI References")]
     public ArmsController armsController;
     public TimingManager timingManager;
@@ -28,113 +22,110 @@ public class EnvelopeConveyor : MonoBehaviour
 
     private Dictionary<NoteType, GameObject> envelopePrefabDict;
     private List<GameObject> activeEnvelopes = new List<GameObject>();
-
+    private EnvelopeLevel currentLevelData;
     private int sequenceIndex = 0;
     private double songStartDspTime;
     private float beatInterval;
     private float moveDuration;
+    private bool levelIsPlaying = false;
 
     private bool isPaused = false;
     private double pauseStartedTime = 0.0;
     private double totalTimePaused = 0.0;
-    private double CurrentSongTime
-    {
-        get
-        {
-            if (isPaused)
-            {
-                return pauseStartedTime - totalTimePaused;
-            }
-            else
-            {
-                return AudioSettings.dspTime - totalTimePaused;
-            }
-        }
-    }
+    private double CurrentSongTime => isPaused ? pauseStartedTime - totalTimePaused : AudioSettings.dspTime - totalTimePaused;
 
-    void Start()
+    void Awake()
     {
         envelopePrefabDict = new Dictionary<NoteType, GameObject>();
         foreach (var mapping in noteMappings)
             envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
+    }
 
-        if (!isTutorialMode)
+    private void SetupConveyorForLevel(EnvelopeLevel levelData)
+    {
+        StopAllCoroutines();
+
+        foreach (var env in activeEnvelopes)
         {
-            if (levelData == null || levelData.sequences.Length == 0) {  return; }
-            if (timingManager == null) {  return; }
-
-            beatInterval = 60f / levelData.beatsPerMinute;
-            float totalTravelTime = beatsToHitZone * beatInterval;
-            moveDuration = totalTravelTime / hitZonePositionIndex;
-
-            songStartDspTime = AudioSettings.dspTime;
-            StartCoroutine(PlaySequenceCoroutine());
-
-            double audioDspTime = AudioSettings.dspTime + (moveDuration * hitZonePositionIndex) - 0.3f;
-            audioManager.PlayScheduled(audioDspTime);
+            if (env != null) Destroy(env);
         }
+        activeEnvelopes.Clear();
+
+        if (timingManager != null) timingManager.ResetManager();
+
+        this.currentLevelData = levelData;
+
+        beatInterval = 60f / this.currentLevelData.beatsPerMinute;
+        float totalTravelTime = beatsToHitZone * beatInterval;
+        moveDuration = totalTravelTime / hitZonePositionIndex;
+
+        sequenceIndex = 0;
+        totalTimePaused = 0;
+        songStartDspTime = AudioSettings.dspTime;
     }
 
-    public void Pause()
+    public void StartMainLevel(EnvelopeLevel mainLevelData)
     {
-        if (isPaused) return;
-        isPaused = true;
-        pauseStartedTime = AudioSettings.dspTime;
+        if (levelIsPlaying) return;
+
+        SetupConveyorForLevel(mainLevelData);
+        levelIsPlaying = true;
+
+        StartCoroutine(MainLevelCoroutine());
+
+        double audioDspTime = AudioSettings.dspTime + (moveDuration * hitZonePositionIndex) - 0.5f;
+        if (audioManager != null) audioManager.PlayScheduled(audioDspTime);
     }
 
-    public void Resume()
+    public IEnumerator PlayTutorialSequence(EnvelopeSequence seq, bool autoStamp, float bpm)
     {
-        if (!isPaused) return;
-        double pauseDuration = AudioSettings.dspTime - pauseStartedTime;
-        totalTimePaused += pauseDuration;
-        isPaused = false;
+        beatInterval = 60f / bpm;
+        float totalTravelTime = beatsToHitZone * beatInterval;
+        moveDuration = totalTravelTime / hitZonePositionIndex;
+        songStartDspTime = AudioSettings.dspTime;
+
+        yield return StartCoroutine(SpawnAndAnimateSequence(seq, autoStamp, true, 0));
     }
-    IEnumerator PlaySequenceCoroutine()
+
+    private IEnumerator MainLevelCoroutine()
     {
-        while (sequenceIndex < levelData.sequences.Length)
+        while (sequenceIndex < currentLevelData.sequences.Length)
         {
-            var seq = levelData.sequences[sequenceIndex];
+            var seq = currentLevelData.sequences[sequenceIndex];
             timingManager.playerInputEnabled = true;
-
-            yield return StartCoroutine(SpawnAndAnimateSequence(seq, false));
-
+            yield return StartCoroutine(SpawnAndAnimateSequence(seq, false, false, sequenceIndex));
             sequenceIndex++;
         }
 
-        while (activeEnvelopes.Count > 0)
-            yield return null;
-
+        while (activeEnvelopes.Count > 0) yield return null;
         timingManager.playerInputEnabled = false;
         endGameManger.End();
     }
 
-    public IEnumerator PlayExamplePhase(EnvelopeSequence seq)
+    private IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, bool isTutorial, int currentSequenceIndex)
     {
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, true));
-    }
-
-    public IEnumerator PlayPlayerPhase(EnvelopeSequence seq)
-    {
-        yield return StartCoroutine(SpawnAndAnimateSequence(seq, false));
-    }
-
-    IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
-    {
-        activeEnvelopes.Clear();
         for (int i = 0; i < seq.pattern.Length; i++)
         {
             NoteType type = seq.pattern[i];
-            double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
+            double spawnOffset = (isTutorial ? i : (currentSequenceIndex * seq.pattern.Length + i)) * beatInterval;
+            double spawnTime = songStartDspTime + spawnOffset;
 
             yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
             SpawnEnvelope(type, autoStamp, spawnTime);
 
             if (type == NoteType.HalfTap || type == NoteType.HalfTapStamped)
             {
-                double halfSpawn = spawnTime + beatInterval / 2f;
-                yield return new WaitUntil(() => CurrentSongTime >= halfSpawn);
-                SpawnEnvelope(type, autoStamp, halfSpawn);
+                double halfSpawnTime = spawnTime + beatInterval / 2f;
+                yield return new WaitUntil(() => CurrentSongTime >= halfSpawnTime);
+                SpawnEnvelope(type, autoStamp, halfSpawnTime);
             }
+        }
+
+        if (isTutorial)
+        {
+            double sequenceDuration = seq.pattern.Length * beatInterval;
+            double clearTime = beatsToHitZone * beatInterval;
+            yield return new WaitUntil(() => CurrentSongTime >= songStartDspTime + sequenceDuration + clearTime);
         }
     }
 
@@ -155,6 +146,7 @@ public class EnvelopeConveyor : MonoBehaviour
 
     protected virtual IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, double spawnTime)
     {
+        Envelope e = envelope.GetComponent<Envelope>();
         for (int posIndex = 1; posIndex < envelopePositions.Length; posIndex++)
         {
             Vector3 startPos = envelopePositions[posIndex - 1].position;
@@ -162,27 +154,30 @@ public class EnvelopeConveyor : MonoBehaviour
 
             double segmentStart = spawnTime + (posIndex - 1) * moveDuration;
             double segmentEnd = spawnTime + posIndex * moveDuration;
+
             while (CurrentSongTime < segmentEnd)
             {
                 if (envelope == null) yield break;
-
-                float t = (float)((CurrentSongTime - segmentStart) / (segmentEnd - segmentStart));
-                t = Mathf.Clamp01(t);
-                envelope.transform.position = Vector3.Lerp(startPos, endPos, t);
+                float t = (float)((CurrentSongTime - segmentStart) / moveDuration);
+                envelope.transform.position = Vector3.Lerp(startPos, endPos, Mathf.Clamp01(t));
                 yield return null;
             }
 
             if (envelope == null) yield break;
             envelope.transform.position = endPos;
+
+            if (posIndex == hitZonePositionIndex && e != null && e.needsStampSwap)
+            {
+                StampEnvelope(envelope);
+                timingManager.TriggerSpriteSwap(e);
+            }
         }
 
-        if (envelope != null)
-            Destroy(envelope);
-
+        if (envelope != null) Destroy(envelope);
         activeEnvelopes.Remove(envelope);
     }
 
-    void StampEnvelope(GameObject env, float moveDuration)
+    void StampEnvelope(GameObject env)
     {
         Envelope e = env.GetComponent<Envelope>();
         if (e != null && e.needsStampSwap && armsController != null)
@@ -194,10 +189,25 @@ public class EnvelopeConveyor : MonoBehaviour
 
     public void ProcessSuccessfulAction(GameObject envelope)
     {
-        Envelope e = envelope.GetComponent<Envelope>();
-        StampEnvelope(envelope, e.moveDuration);
-
         if (activeEnvelopes.Contains(envelope))
+        {
+            StampEnvelope(envelope);
             activeEnvelopes.Remove(envelope);
+        }
+    }
+
+    public void Pause()
+    {
+        if (isPaused) return;
+        isPaused = true;
+        pauseStartedTime = AudioSettings.dspTime;
+    }
+
+    public void Resume()
+    {
+        if (!isPaused) return;
+        double pauseDuration = AudioSettings.dspTime - pauseStartedTime;
+        totalTimePaused += pauseDuration;
+        isPaused = false;
     }
 }

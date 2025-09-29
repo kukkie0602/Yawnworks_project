@@ -11,14 +11,12 @@ public class TutorialManager : MonoBehaviour
     public EndGamePanel endGamePanel;
     public TimingManager timingManager;
 
-    [Header("Tutorial settings")]
+    [Header("Level Settings")]
     public EnvelopeLevel tutorialLevelData;
-    public int targetSuccesses = 5;
-    private int currentSuccesses = 0;
+    public EnvelopeLevel mainLevelData;
 
     [Header("UI Elements")]
     public TMP_Text instructionText;
-    public TMP_Text progressText;
     public Image tutorialImage;
 
     private EnvelopeSequence tutorialSequence;
@@ -27,69 +25,60 @@ public class TutorialManager : MonoBehaviour
     {
         if (tutorialLevelData == null || tutorialLevelData.sequences.Length == 0)
         {
-            Debug.LogError("Tutorial Level Data is niet toegewezen of bevat geen sequenties!");
-            this.enabled = false;
-            return;
-        }
-
-        if (timingManager == null)
-        {
-            Debug.LogError("Timing Manager is niet toegewezen in de TutorialManager!");
-            this.enabled = false;
+            Debug.LogError("Tutorial Level Data is not assigned!");
+            gameObject.SetActive(false);
             return;
         }
 
         tutorialSequence = tutorialLevelData.sequences[0];
-
         StartCoroutine(TutorialFlow());
     }
 
     private IEnumerator TutorialFlow()
     {
-        while (currentSuccesses < targetSuccesses)
+        while (true)
         {
             instructionText.text = "Look and <color=#C14520>learn</color> the rhythm...";
-            progressText.text = $"{currentSuccesses} / {targetSuccesses}";
             timingManager.playerInputEnabled = false;
-            yield return new WaitForSeconds(2.5f);
-            yield return StartCoroutine(envelopeConveyor.PlayExamplePhase(tutorialSequence));
+            yield return new WaitForSeconds(1.0f);
+            yield return StartCoroutine(envelopeConveyor.PlayTutorialSequence(tutorialSequence, true, tutorialLevelData.beatsPerMinute));
 
-            instructionText.text = "Get <color=#C14520>ready</color> its your turn!";
-            yield return new WaitForSeconds(2.5f);
+            instructionText.text = "Get <color=#C14520>ready</color> to tap!";
+            yield return new WaitForSeconds(1.5f);
 
-            instructionText.text = "<color=#C14520>Tap</color> the rhythm.";
-            scoreManager.ResetAttemptStats(); 
+            instructionText.text = "Now, <color=#C14520>you</color> try...";
+            scoreManager.ResetAttemptStats();
             timingManager.playerInputEnabled = true;
-            yield return StartCoroutine(envelopeConveyor.PlayPlayerPhase(tutorialSequence));
+            yield return StartCoroutine(envelopeConveyor.PlayTutorialSequence(tutorialSequence, false, tutorialLevelData.beatsPerMinute));
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1.0f);
 
             int hits = scoreManager.GetHitsThisAttempt();
             int misses = scoreManager.GetMissesThisAttempt();
             int requiredHits = tutorialSequence.pattern.Length;
 
-            if (misses == 0 && hits == requiredHits)
+            if (misses == 0 && hits >= requiredHits)
             {
-                currentSuccesses++;
                 instructionText.text = "Well done!";
                 yield return new WaitForSeconds(1.5f);
+                break;
             }
             else
             {
-                instructionText.text = "Oops, try again!";
-                yield return new WaitForSeconds(1.5f);
+                instructionText.text = "Oops, let's try that again!";
+                yield return new WaitForSeconds(2.0f);
             }
         }
 
         timingManager.playerInputEnabled = false;
-        instructionText.text = "Tutorial completed!";
-        progressText.text = $"{currentSuccesses} / {targetSuccesses}";
+        instructionText.text = "Here we go!";
 
-        if (endGamePanel != null)
-        {
-            endGamePanel.End();
-        }
+        yield return new WaitForSeconds(1.5f);
+
+        scoreManager.ResetScore();
+        envelopeConveyor.StartMainLevel(mainLevelData);
 
         tutorialImage.gameObject.SetActive(false);
+        gameObject.SetActive(false); 
     }
 }

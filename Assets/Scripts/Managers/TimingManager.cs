@@ -29,6 +29,17 @@ public class TimingManager : MonoBehaviour
     private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
     private int skipNoteCounter = 0;
 
+    public void ResetManager()
+    {
+        activeEnvelopesInZone.Clear();
+        skipNoteCounter = 0;
+        playerInputEnabled = true;
+
+        countdown3Image.gameObject.SetActive(false);
+        countdown2Image.gameObject.SetActive(false);
+        countdown1Image.gameObject.SetActive(false);
+        goImage.gameObject.SetActive(false);
+    }
 
     void Update()
     {
