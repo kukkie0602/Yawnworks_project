@@ -138,7 +138,7 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
-    void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
+    protected virtual void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
     {
         if (envelopePrefabDict.TryGetValue(type, out GameObject prefab))
         {
@@ -153,7 +153,7 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
-    IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, double spawnTime)
+    protected virtual IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, double spawnTime)
     {
         for (int posIndex = 1; posIndex < envelopePositions.Length; posIndex++)
         {
