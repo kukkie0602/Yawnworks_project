@@ -9,6 +9,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public TimingManager timingManager;
     public EndGamePanel endGameManger;
     public Animator countdownAnimator;
+    public Animator finishAnimator;
 
     [Header("BPM Synchronization")]
     public int hitZonePositionIndex = 4;
@@ -103,6 +104,12 @@ public class EnvelopeConveyor : MonoBehaviour
 
         while (activeEnvelopes.Count > 0) yield return null;
         timingManager.playerInputEnabled = false;
+
+        if (finishAnimator != null)
+        {
+            finishAnimator.SetTrigger("FinishStart");
+        }
+        yield return new WaitForSeconds(3.0f);
         endGameManger.End();
     }
 
