@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeLevel
   songClip: {fileID: 0}
   levelName: The Postoffice
-  beatsPerMinute: 120
+  beatsPerMinute: 80
   difficulty: 0
   sequences:
   - pattern: 02000000020000000200000002000000
