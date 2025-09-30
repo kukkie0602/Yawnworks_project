@@ -8,6 +8,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public ArmsController armsController;
     public TimingManager timingManager;
     public EndGamePanel endGameManger;
+    public Animator countdownAnimator;
 
     [Header("BPM Synchronization")]
     public int hitZonePositionIndex = 4;
@@ -28,6 +29,7 @@ public class EnvelopeConveyor : MonoBehaviour
     private float beatInterval;
     private float moveDuration;
     private bool levelIsPlaying = false;
+    private bool countdownHasBeenScheduled = false;
 
     private bool isPaused = false;
     private double pauseStartedTime = 0.0;
@@ -62,6 +64,8 @@ public class EnvelopeConveyor : MonoBehaviour
         sequenceIndex = 0;
         totalTimePaused = 0;
         songStartDspTime = AudioSettings.dspTime;
+
+        countdownHasBeenScheduled = false;
     }
 
     public void StartMainLevel(EnvelopeLevel mainLevelData)
@@ -110,6 +114,14 @@ public class EnvelopeConveyor : MonoBehaviour
             double spawnOffset = (isTutorial ? i : (currentSequenceIndex * seq.pattern.Length + i)) * beatInterval;
             double spawnTime = songStartDspTime + spawnOffset;
 
+            if (type == NoteType.SkipOne && !countdownHasBeenScheduled && !isTutorial)
+            {
+                double timeToHitZone = beatsToHitZone * beatInterval;
+                double animationTriggerTime = spawnTime + timeToHitZone;
+                StartCoroutine(ScheduleAnimationTrigger(animationTriggerTime));
+                countdownHasBeenScheduled = true; 
+            }
+
             yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
             SpawnEnvelope(type, autoStamp, spawnTime);
 
@@ -126,6 +138,16 @@ public class EnvelopeConveyor : MonoBehaviour
             double sequenceDuration = seq.pattern.Length * beatInterval;
             double clearTime = beatsToHitZone * beatInterval;
             yield return new WaitUntil(() => CurrentSongTime >= songStartDspTime + sequenceDuration + clearTime);
+        }
+    }
+
+    private IEnumerator ScheduleAnimationTrigger(double triggerDspTime)
+    {
+        yield return new WaitUntil(() => AudioSettings.dspTime >= triggerDspTime -1);
+
+        if (countdownAnimator != null)
+        {
+            countdownAnimator.SetTrigger("StartCountdown");
         }
     }
 

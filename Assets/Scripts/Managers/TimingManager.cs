@@ -19,10 +19,7 @@ public class TimingManager : MonoBehaviour
     public float stampDelay = 0.3f;
 
     [Header("StartUI")]
-    public Image countdown3Image;
-    public Image countdown2Image;
-    public Image countdown1Image;
-    public Image goImage;
+    public Animator countdownAnimator;
 
     public bool playerInputEnabled = true;
 
@@ -34,11 +31,6 @@ public class TimingManager : MonoBehaviour
         activeEnvelopesInZone.Clear();
         skipNoteCounter = 0;
         playerInputEnabled = true;
-
-        countdown3Image.gameObject.SetActive(false);
-        countdown2Image.gameObject.SetActive(false);
-        countdown1Image.gameObject.SetActive(false);
-        goImage.gameObject.SetActive(false);
     }
 
     void Update()
@@ -84,22 +76,10 @@ public class TimingManager : MonoBehaviour
 
         if (env.noteType == NoteType.SkipOne)
         {
-            if (skipNoteCounter < 4)
-            {
-                countdown3Image.gameObject.SetActive(false);
-                countdown2Image.gameObject.SetActive(false);
-                countdown1Image.gameObject.SetActive(false);
-                goImage.gameObject.SetActive(false);
-
-                skipNoteCounter++;
-                env.skipNoteID = skipNoteCounter;
-                if (env.skipNoteID == 1) countdown3Image.gameObject.SetActive(true);
-                else if (env.skipNoteID == 2) countdown2Image.gameObject.SetActive(true);
-                else if (env.skipNoteID == 3) countdown1Image.gameObject.SetActive(true);
-                else if (env.skipNoteID == 4) goImage.gameObject.SetActive(true);
-            }
+            skipNoteCounter++;
             return;
         }
+
         if (env != null && !activeEnvelopesInZone.Contains(env))
         {
             activeEnvelopesInZone.Add(env);
@@ -114,10 +94,6 @@ public class TimingManager : MonoBehaviour
 
         if (env.noteType == NoteType.SkipOne)
         {
-            if (env.skipNoteID == 1) countdown3Image.gameObject.SetActive(false);
-            else if (env.skipNoteID == 2) countdown2Image.gameObject.SetActive(false);
-            else if (env.skipNoteID == 3) countdown1Image.gameObject.SetActive(false);
-            else if (env.skipNoteID == 4) goImage.gameObject.SetActive(false);
             return;
         }
 
