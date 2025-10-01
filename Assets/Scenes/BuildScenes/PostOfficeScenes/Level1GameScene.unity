@@ -6463,14 +6463,6 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1064449837015385656, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1064449837015385656, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2111548965838991767, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -6478,10 +6470,6 @@ PrefabInstance:
     - target: {fileID: 2111548965838991767, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_LocalScale.y
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2111548965838991767, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2111548965838991767, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6520,17 +6508,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2089111482}
     - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: stampedEnvelopeBlue
-      value: 
-      objectReference: {fileID: -6391640921839891155, guid: ed97f60ff2cd92844ab6e00346fe924a, type: 3}
-    - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: stampeffectanimator
       value: 
       objectReference: {fileID: 917807370}
-    - target: {fileID: 4858735861783478979, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: stampedEnvelopeSprite
-      value: 
-      objectReference: {fileID: -2947641425840669725, guid: cf75a79daabfc9f438086608fe296175, type: 3}
     - target: {fileID: 5173770610871348993, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_Size.x
       value: 2
@@ -6538,14 +6518,6 @@ PrefabInstance:
     - target: {fileID: 5173770610871348993, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_Size.y
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6585,10 +6557,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6202539765887319243, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8496887410845517730, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
-      propertyPath: m_GravityScale
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8669578614902063145, guid: 2f2aa355b86bcd84581492202a94d1ff, type: 3}
