@@ -8,71 +8,60 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
     public Transform[] spawnPoints;
     public Transform[] tablePositions;
     public Transform[] boxPositions;
+
     public float fallDuration = 1f;
     public float shootDuration = 0.5f;
-    public float tapWindowBeats = 4f;
-    public float beatsBetweenSets = 4f;
-    public float spawnSpeedMultiplier = 1f;
+    public float tapRadius = 0.5f;
 
-    private HashSet<GameObject> tappableEnvelopes = new HashSet<GameObject>();
-    private HashSet<GameObject> landedEnvelopes = new HashSet<GameObject>();
+    [Header("Note Sounds")]
+    public AudioClip e4Sound;
+    public AudioClip g4Sound;
+    public AudioClip c5Sound;
+    public AudioClip d5Sound;
 
-    protected override IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
+    private Dictionary<NoteType, AudioClip> noteSounds;
+    private Dictionary<NoteType, int> noteToLane;
+    private AudioSource audioSource;
+
+    private void Awake()
     {
-        activeEnvelopes.Clear();
+        audioSource = gameObject.AddComponent<AudioSource>();
 
-        bool firstSet = true;
-
-        for (int i = 0; i < seq.pattern.Length; i += 4)
+        // Map musical note types to sounds
+        noteSounds = new Dictionary<NoteType, AudioClip>()
         {
-            List<GameObject> currentSet = new List<GameObject>();
+            { NoteType.E4, e4Sound },
+            { NoteType.G4, g4Sound },
+            { NoteType.C5, c5Sound },
+            { NoteType.D5, d5Sound }
+        };
 
-            for (int j = 0; j < 4 && i + j < seq.pattern.Length; j++)
-            {
-                NoteType type = seq.pattern[i + j];
-                int laneIndex = (i + j) % spawnPoints.Length;
-                GameObject env = SpawnEnvelope(type, autoStamp, 0, laneIndex);
-                if (env != null) currentSet.Add(env);
+        // Map musical note types to lanes (left-to-right)
+        noteToLane = new Dictionary<NoteType, int>()
+        {
+            { NoteType.E4, 0 }, // leftmost lane
+            { NoteType.G4, 1 },
+            { NoteType.C5, 2 },
+            { NoteType.D5, 3 },  // rightmost lane
 
-                yield return new WaitForSeconds(beatInterval * spawnSpeedMultiplier);
-            }
-
-            StartCoroutine(HandleTapWindow(currentSet));
-
-            // Wait until all envelopes in this set have landed
-            yield return new WaitUntil(() => AllEnvelopesLanded(currentSet));
-
-            // Only then apply the delay between sets
-            yield return new WaitForSeconds(beatsBetweenSets * beatInterval);
-        }
+            { NoteType.E4Half, 0 },
+            { NoteType.G4Half, 1 },
+            { NoteType.C5Half, 2 },
+            { NoteType.D5Half, 3 }
+        };
     }
 
-    private IEnumerator HandleTapWindow(List<GameObject> set)
+    // Override spawn to spawn at the correct lane for the note
+    protected void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
     {
-        yield return new WaitUntil(() => AllEnvelopesLanded(set));
+        if (!envelopePrefabDict.TryGetValue(type, out GameObject prefab))
+            return;
 
-        double tapWindowSeconds = tapWindowBeats * beatInterval;
-        double startTime = CurrentSongTime;
-
-        foreach (var env in set)
-            if (env != null) tappableEnvelopes.Add(env);
-
-        while (CurrentSongTime < startTime + tapWindowSeconds &&
-               set.Exists(env => env != null && !env.GetComponent<Envelope>().isTapped))
-            yield return null;
-
-        foreach (var env in set)
+        if (!noteToLane.TryGetValue(type, out int laneIndex))
         {
-            if (env == null) continue;
-            Envelope e = env.GetComponent<Envelope>();
-            tappableEnvelopes.Remove(env);
-            if (e != null && !e.isTapped) e.isTapped = true;
+            Debug.LogWarning($"NoteType {type} has no lane mapping!");
+            return;
         }
-    }
-
-    protected GameObject SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime, int laneIndex)
-    {
-        if (!envelopePrefabDict.TryGetValue(type, out GameObject prefab)) return null;
 
         Transform spawnPoint = spawnPoints[laneIndex];
         Transform tablePos = tablePositions[laneIndex];
@@ -81,44 +70,49 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         GameObject env = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
         Envelope e = env.GetComponent<Envelope>();
         e.noteType = type;
-        e.moveDuration = (beatsToHitZone * beatInterval) / hitZonePositionIndex;
+
+        // Determine if the envelope should fall faster (half-note)
+        e.isHalfNote = (type == NoteType.E4Half || type == NoteType.G4Half ||
+                        type == NoteType.C5Half || type == NoteType.D5Half);
 
         activeEnvelopes.Add(env);
-        StartCoroutine(FallToTable(env, tablePos, boxPos));
-        return env;
+
+        StartCoroutine(FallToTableAndShoot(env, tablePos, boxPos));
     }
 
-    private IEnumerator FallToTable(GameObject envelope, Transform tablePos, Transform boxPos)
+
+    // Movement and tap/shoot logic
+    private IEnumerator FallToTableAndShoot(GameObject envelope, Transform tablePos, Transform boxPos)
     {
         if (envelope == null) yield break;
         Envelope e = envelope.GetComponent<Envelope>();
         if (e == null) yield break;
 
+        float duration = e.isHalfNote ? fallDuration / 2f : fallDuration;
+
+        // --- Fall to table ---
         Vector3 start = envelope.transform.position;
         Vector3 end = tablePos.position;
         float t = 0f;
+
         while (t < 1f)
         {
             if (envelope == null) yield break;
-            t += Time.deltaTime / fallDuration;
+            t += Time.deltaTime / duration;
             envelope.transform.position = Vector3.Lerp(start, end, t);
             yield return null;
         }
+
         envelope.transform.position = end;
 
-        landedEnvelopes.Add(envelope);
-
+        // --- Wait for tap or successful action ---
         yield return new WaitUntil(() => e.isTapped);
 
-        yield return StartCoroutine(ShootToBox(envelope, boxPos));
-    }
+        // --- Shoot to box ---
+        start = envelope.transform.position;
+        end = boxPos.position;
+        t = 0f;
 
-    private IEnumerator ShootToBox(GameObject envelope, Transform boxPos)
-    {
-        if (envelope == null) yield break;
-        Vector3 start = envelope.transform.position;
-        Vector3 end = boxPos.position;
-        float t = 0f;
         while (t < 1f)
         {
             if (envelope == null) yield break;
@@ -126,30 +120,65 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
             envelope.transform.position = Vector3.Lerp(start, end, t);
             yield return null;
         }
+
         if (envelope != null) Destroy(envelope);
         activeEnvelopes.Remove(envelope);
-        landedEnvelopes.Remove(envelope);
     }
 
-    private bool AllEnvelopesLanded(List<GameObject> set)
+    protected override IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
     {
-        foreach (var env in set)
+        activeEnvelopes.Clear();
+
+        for (int i = 0; i < seq.pattern.Length; i++)
         {
-            if (env == null) continue;
-            if (!landedEnvelopes.Contains(env)) return false;
+            EnvelopeSequence.Beat beat = seq.pattern[i];
+
+            // --- First note ---
+            if (beat.first != NoteType.SkipOne && beat.first != NoteType.None)
+            {
+                double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
+                yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
+                SpawnEnvelope(beat.first, autoStamp, spawnTime);
+            }
+
+            // --- Second note (half-beat) ---
+            if (beat.second != NoteType.SkipOne && beat.second != NoteType.None)
+            {
+                double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i + 0.5) * beatInterval;
+                yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
+                SpawnEnvelope(beat.second, autoStamp, spawnTime);
+            }
         }
-        return true;
     }
 
+    // Connect Level 1 hit detection to shooting
     public override void ProcessSuccessfulAction(GameObject envelope)
     {
-        if (envelope == null) return;
-        if (!tappableEnvelopes.Contains(envelope)) return;
-
         Envelope e = envelope.GetComponent<Envelope>();
-        if (e == null) return;
+        if (e != null)
+        {
+            e.isTapped = true; // signal coroutine to shoot
+            StampEnvelope(envelope, e.moveDuration);
 
-        e.isTapped = true;
-        StampEnvelope(envelope, e.moveDuration);
+            // Play sound only if note type has an assigned clip
+            if (noteSounds.TryGetValue(e.noteType, out AudioClip clip) && clip != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
+        }
+    }
+
+    private double GetNoteOffset(NoteType type)
+    {
+        // Full notes spawn at start of beat
+        if (type == NoteType.E4 || type == NoteType.G4 || type == NoteType.C5 || type == NoteType.D5)
+            return 0;
+
+        // Half notes spawn halfway through the beat
+        if (type == NoteType.E4Half || type == NoteType.G4Half ||
+            type == NoteType.C5Half || type == NoteType.D5Half)
+            return 0.5; // half-beat offset
+
+        return 0; // default
     }
 }

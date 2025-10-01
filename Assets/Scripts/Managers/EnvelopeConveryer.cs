@@ -121,36 +121,44 @@ public class EnvelopeConveyor : MonoBehaviour
     protected virtual IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
     {
         activeEnvelopes.Clear();
+
         for (int i = 0; i < seq.pattern.Length; i++)
         {
-            NoteType type = seq.pattern[i];
-            double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
+            EnvelopeSequence.Beat beat = seq.pattern[i];
 
-            yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
-            SpawnEnvelope(type, autoStamp, spawnTime);
-
-            if (type == NoteType.HalfTap || type == NoteType.HalfTapStamped)
+            if (beat.first != NoteType.None && beat.first != NoteType.SkipOne)
             {
-                double halfSpawn = spawnTime + beatInterval / 2f;
-                yield return new WaitUntil(() => CurrentSongTime >= halfSpawn);
-                SpawnEnvelope(type, autoStamp, halfSpawn);
+                double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
+                yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
+                SpawnEnvelope(beat.first, autoStamp, spawnTime);
+            }
+
+            if (beat.second != NoteType.None && beat.second != NoteType.SkipOne)
+            {
+                double halfSpawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i + 0.5) * beatInterval;
+                yield return new WaitUntil(() => CurrentSongTime >= halfSpawnTime);
+                SpawnEnvelope(beat.second, autoStamp, halfSpawnTime);
             }
         }
     }
 
     protected virtual void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
     {
-        if (envelopePrefabDict.TryGetValue(type, out GameObject prefab))
-        {
-            GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
-            Envelope e = env.GetComponent<Envelope>();
-            e.noteType = type;
-            e.moveDuration = moveDuration;
-            if (autoStamp) e.needsStampSwap = true;
+        if (!envelopePrefabDict.TryGetValue(type, out GameObject prefab))
+            return;
 
-            activeEnvelopes.Add(env);
-            StartCoroutine(MoveEnvelopeAlongConveyor(env, spawnTime));
-        }
+        GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
+        Envelope e = env.GetComponent<Envelope>();
+        e.noteType = type;
+        e.moveDuration = moveDuration;
+
+        e.isHalfNote = (type == NoteType.E4Half || type == NoteType.G4Half || type == NoteType.C5Half || type == NoteType.D5Half);
+
+        if (autoStamp)
+            e.needsStampSwap = true;
+
+        activeEnvelopes.Add(env);
+        StartCoroutine(MoveEnvelopeAlongConveyor(env, spawnTime));
     }
 
     protected virtual IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, double spawnTime)

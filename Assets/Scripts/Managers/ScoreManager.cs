@@ -64,13 +64,19 @@ public class ScoreManager : MonoBehaviour
 
         foreach (var sequence in currentLevel.sequences)
         {
-            foreach (var note in sequence.pattern)
+            foreach (var beat in sequence.pattern)
             {
-                if (note == NoteType.Tap || note == NoteType.HalfTap)
+                if (beat.first != NoteType.None && beat.first != NoteType.SkipOne)
                 {
                     if (currentCombo < maxCombo)
                         currentCombo++;
+                    calculatedMaxScore += pointsPerNote * currentCombo;
+                }
 
+                if (beat.second != NoteType.None && beat.second != NoteType.SkipOne)
+                {
+                    if (currentCombo < maxCombo)
+                        currentCombo++;
                     calculatedMaxScore += pointsPerNote * currentCombo;
                 }
             }
