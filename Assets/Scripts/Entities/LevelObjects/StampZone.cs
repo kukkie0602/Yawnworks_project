@@ -19,6 +19,7 @@ public class StampTriggerZone : MonoBehaviour
 
             if (timingManager != null)
             {
+                timingManager.TriggerGoodStamp();
                 timingManager.TriggerSpriteSwap(env);
             }
 

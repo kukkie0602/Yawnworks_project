@@ -23,13 +23,14 @@ public class TimingManager : MonoBehaviour
 
     public bool playerInputEnabled = true;
 
+    [Header("Animation")]
+    public Animator stampeffectanimator;
+
     private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
-    private int skipNoteCounter = 0;
 
     public void ResetManager()
     {
         activeEnvelopesInZone.Clear();
-        skipNoteCounter = 0;
         playerInputEnabled = true;
     }
 
@@ -48,6 +49,7 @@ public class TimingManager : MonoBehaviour
                 {
                     Debug.Log("HIT on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteHit();
+                    TriggerGoodStamp();
                     TriggerSpriteSwap(envelopeToHit);
                     envelopeToHit.needsStampSwap = false;
 
@@ -58,12 +60,14 @@ public class TimingManager : MonoBehaviour
                 {
                     Debug.Log("Faulty Hit on envelope: " + envelopeToHit.noteType);
                     scoreManager.OnNoteMiss();
+                    TriggerBadStamp();
                     activeEnvelopesInZone.Remove(envelopeToHit);
                 }
             }
             else
             {
                 Debug.Log("MISS! (Pressed too early)");
+                TriggerBadStamp();
                 scoreManager.OnNoteMiss();
             }
         }
@@ -76,7 +80,6 @@ public class TimingManager : MonoBehaviour
 
         if (env.noteType == NoteType.SkipOne)
         {
-            skipNoteCounter++;
             return;
         }
 
@@ -111,6 +114,7 @@ public class TimingManager : MonoBehaviour
             {
                 Debug.Log("MISS! (Pressed too late)");
                 scoreManager.OnNoteMiss();
+                TriggerBadStamp();
             }
         }
         activeEnvelopesInZone.Remove(env);
@@ -140,5 +144,26 @@ public class TimingManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void TriggerGoodStamp(float delay = 0.23f)
+    {
+        StartCoroutine(PlayGoodStampWithDelay(delay));
+    }
+
+    public void TriggerBadStamp(float delay = 0.23f)
+    {
+        StartCoroutine(PlayBadStampWithDelay(delay));
+    }
+
+    private IEnumerator PlayGoodStampWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        stampeffectanimator.SetTrigger("GoodStamp");
+    }
+    private IEnumerator PlayBadStampWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        stampeffectanimator.SetTrigger("BadStamp");
     }
 }

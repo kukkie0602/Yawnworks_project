@@ -10,6 +10,7 @@ public class EnvelopeConveyor : MonoBehaviour
     public EndGamePanel endGameManger;
     public Animator countdownAnimator;
     public Animator finishAnimator;
+    public StampTriggerZone stampZone;
 
     [Header("BPM Synchronization")]
     public int hitZonePositionIndex = 4;
@@ -39,6 +40,10 @@ public class EnvelopeConveyor : MonoBehaviour
 
     void Awake()
     {
+        if (stampZone != null)
+        {
+            stampZone.gameObject.SetActive(false);
+        }
         envelopePrefabDict = new Dictionary<NoteType, GameObject>();
         foreach (var mapping in noteMappings)
             envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
@@ -115,6 +120,11 @@ public class EnvelopeConveyor : MonoBehaviour
 
     private IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, bool isTutorial, int currentSequenceIndex)
     {
+        if (isTutorial && stampZone != null)
+        {
+            stampZone.gameObject.SetActive(autoStamp);
+        }
+
         for (int i = 0; i < seq.pattern.Length; i++)
         {
             NoteType type = seq.pattern[i];
@@ -212,6 +222,7 @@ public class EnvelopeConveyor : MonoBehaviour
         if (e != null && e.needsStampSwap && armsController != null)
         {
             e.needsStampSwap = false;
+            timingManager.TriggerGoodStamp();
             armsController.PlayArmsAnimation(1f);
         }
     }

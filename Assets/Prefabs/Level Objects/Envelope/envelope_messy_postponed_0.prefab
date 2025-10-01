@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4912943180598607587}
   - component: {fileID: 7345726927376860188}
   - component: {fileID: 7827122933698221726}
+  - component: {fileID: -4606113279556204754}
   m_Layer: 0
   m_Name: envelope_messy_postponed_0
   m_TagString: Untagged
@@ -107,7 +108,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Envelope
   noteType: 1
   needsStampSwap: 0
-  animator: {fileID: 0}
+  skipNoteID: 0
+  moveDuration: 0
 --- !u!61 &7345726927376860188
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -181,3 +183,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &-4606113279556204754
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4140000429361478535}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4d7fb405486468349a143682811063fb, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
