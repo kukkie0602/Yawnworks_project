@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
     private Dictionary<NoteType, AudioClip> noteSounds;
     private Dictionary<NoteType, int> noteToLane;
     private AudioSource audioSource;
+
 
     private void Awake()
     {
@@ -49,6 +51,12 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
             { NoteType.C5Half, 2 },
             { NoteType.D5Half, 3 }
         };
+
+        envelopePrefabDict = new Dictionary<NoteType, GameObject>();
+        foreach (var mapping in noteMappings)
+            envelopePrefabDict[mapping.noteType] = mapping.envelopePrefab;
+
+        StartMainLevel(currentLevelData);
     }
 
     // Override spawn to spawn at the correct lane for the note
@@ -64,6 +72,12 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         }
 
         Transform spawnPoint = spawnPoints[laneIndex];
+
+        if (spawnPoint == null)
+        {
+            Debug.LogError($"Spawn point at index {laneIndex} is not assigned!");
+            return; 
+        }
         Transform tablePos = tablePositions[laneIndex];
         Transform boxPos = boxPositions[laneIndex];
 
@@ -125,7 +139,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         activeEnvelopes.Remove(envelope);
     }
 
-    protected override IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp)
+    protected override IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, bool isTutorial=false, int currentSequenceIndex=0)
     {
         activeEnvelopes.Clear();
 
@@ -158,7 +172,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         if (e != null)
         {
             e.isTapped = true; // signal coroutine to shoot
-            StampEnvelope(envelope, e.moveDuration);
+            StampEnvelope(envelope);
 
             // Play sound only if note type has an assigned clip
             if (noteSounds.TryGetValue(e.noteType, out AudioClip clip) && clip != null)
@@ -166,19 +180,5 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
                 audioSource.PlayOneShot(clip);
             }
         }
-    }
-
-    private double GetNoteOffset(NoteType type)
-    {
-        // Full notes spawn at start of beat
-        if (type == NoteType.E4 || type == NoteType.G4 || type == NoteType.C5 || type == NoteType.D5)
-            return 0;
-
-        // Half notes spawn halfway through the beat
-        if (type == NoteType.E4Half || type == NoteType.G4Half ||
-            type == NoteType.C5Half || type == NoteType.D5Half)
-            return 0.5; // half-beat offset
-
-        return 0; // default
     }
 }

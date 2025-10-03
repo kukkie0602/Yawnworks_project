@@ -672,18 +672,17 @@ MonoBehaviour:
   - {fileID: 977278064}
   stampedEnvelopePrefab: {fileID: 3879698585123424553, guid: e6734ada3854fa945b959a7e9c7f2662, type: 3}
   noteMappings:
-  - noteType: 0
-    envelopePrefab: {fileID: 5391714462202279252, guid: dbca6626731097e4187000813d06ee98, type: 3}
-  - noteType: 1
-    envelopePrefab: {fileID: 5391714462202279252, guid: f912ee3238df0114690e6365c190a326, type: 3}
-  - noteType: 2
-    envelopePrefab: {fileID: 5391714462202279252, guid: 5bd88e352db3cf54aa45a0f40c76ecc4, type: 3}
   - noteType: 3
-    envelopePrefab: {fileID: 3879698585123424553, guid: e6734ada3854fa945b959a7e9c7f2662, type: 3}
-  - noteType: 4
-    envelopePrefab: {fileID: 5391714462202279252, guid: 201aa6341f5b0774293fd0134e8dfa57, type: 3}
+    envelopePrefab: {fileID: 5391714462202279252, guid: 5bd88e352db3cf54aa45a0f40c76ecc4, type: 3}
+  - noteType: 1
+    envelopePrefab: {fileID: 5391714462202279252, guid: dbca6626731097e4187000813d06ee98, type: 3}
+  - noteType: 2
+    envelopePrefab: {fileID: 5391714462202279252, guid: f912ee3238df0114690e6365c190a326, type: 3}
+  - noteType: 0
+    envelopePrefab: {fileID: 5391714462202279252, guid: 5bd88e352db3cf54aa45a0f40c76ecc4, type: 3}
   armsAnimator: {fileID: 1100402131}
   audioManager: {fileID: 1041615262}
+  currentLevelData: {fileID: 11400000, guid: 9d698025b4cf8af48a6ec7bb01034d2e, type: 2}
 --- !u!4 &303166197
 Transform:
   m_ObjectHideFlags: 0

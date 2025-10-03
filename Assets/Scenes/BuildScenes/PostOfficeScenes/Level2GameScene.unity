@@ -700,7 +700,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1.97, y: 2.82}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -899,11 +899,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29575b05476fef24e80707d2d6b3bede, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  isTutorialMode: 0
-  levelData: {fileID: 11400000, guid: b345906ab48ae6145a76b3eb8e8b243b, type: 2}
   armsController: {fileID: 1100402132}
   timingManager: {fileID: 279100221}
   endGameManger: {fileID: 453313690}
+  countdownAnimator: {fileID: 0}
+  finishAnimator: {fileID: 0}
+  stampZone: {fileID: 0}
   hitZonePositionIndex: 4
   beatsToHitZone: 4
   envelopePositions:
@@ -940,6 +941,7 @@ MonoBehaviour:
     envelopePrefab: {fileID: 5391714462202279252, guid: dbca6626731097e4187000813d06ee98, type: 3}
   armsAnimator: {fileID: 1100402131}
   audioManager: {fileID: 1041615262}
+  currentLevelData: {fileID: 11400000, guid: b345906ab48ae6145a76b3eb8e8b243b, type: 2}
   spawnPoints:
   - {fileID: 1350597181}
   - {fileID: 1822026289}

@@ -17,5 +17,12 @@ MonoBehaviour:
   beatsPerMinute: 90
   difficulty: 0
   sequences:
-  - moveDuration: 0.4
-    pattern: 00000000000000000000000000000000
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0

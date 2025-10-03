@@ -25,7 +25,7 @@ public class EnvelopeConveyor : MonoBehaviour
 
     protected Dictionary<NoteType, GameObject> envelopePrefabDict;
     protected List<GameObject> activeEnvelopes = new List<GameObject>();
-	private EnvelopeLevel currentLevelData;
+	public EnvelopeLevel currentLevelData;
     protected int sequenceIndex = 0;
     protected double songStartDspTime;
     protected float beatInterval;
@@ -118,7 +118,7 @@ public class EnvelopeConveyor : MonoBehaviour
         endGameManger.End();
     }
 
-    private IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, bool isTutorial, int currentSequenceIndex)
+    protected virtual IEnumerator SpawnAndAnimateSequence(EnvelopeSequence seq, bool autoStamp, bool isTutorial, int currentSequenceIndex)
     {
         if (isTutorial && stampZone != null)
         {
@@ -127,30 +127,27 @@ public class EnvelopeConveyor : MonoBehaviour
 
         for (int i = 0; i < seq.pattern.Length; i++)
         {
-            NoteType type = seq.pattern[i];
+            EnvelopeSequence.Beat beat = seq.pattern[i];
             double spawnOffset = (isTutorial ? i : (currentSequenceIndex * seq.pattern.Length + i)) * beatInterval;
             double spawnTime = songStartDspTime + spawnOffset;
 
-            if (type == NoteType.SkipOne && !countdownHasBeenScheduled && !isTutorial)
+            if (beat.first == NoteType.SkipOne && !countdownHasBeenScheduled && !isTutorial)
             {
                 double timeToHitZone = beatsToHitZone * beatInterval;
                 double animationTriggerTime = spawnTime + timeToHitZone;
                 StartCoroutine(ScheduleAnimationTrigger(animationTriggerTime));
-                countdownHasBeenScheduled = true; 
+                countdownHasBeenScheduled = true;
             }
 
-            if (beat.first != NoteType.None && beat.first != NoteType.SkipOne)
+            yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
+            if (beat.first == NoteType.None) { break; }
+            SpawnEnvelope(beat.first, autoStamp, spawnTime);
+
+            if (beat.first == NoteType.HalfTap || beat.first == NoteType.HalfTapStamped)
             {
                 double halfSpawnTime = spawnTime + beatInterval / 2f;
                 yield return new WaitUntil(() => CurrentSongTime >= halfSpawnTime);
-                SpawnEnvelope(type, autoStamp, halfSpawnTime);
-            }
-
-            if (beat.second != NoteType.None && beat.second != NoteType.SkipOne)
-            {
-                double halfSpawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i + 0.5) * beatInterval;
-                yield return new WaitUntil(() => CurrentSongTime >= halfSpawnTime);
-                SpawnEnvelope(beat.second, autoStamp, halfSpawnTime);
+                SpawnEnvelope(beat.first, autoStamp, halfSpawnTime);
             }
         }
 
@@ -224,7 +221,7 @@ public class EnvelopeConveyor : MonoBehaviour
         activeEnvelopes.Remove(envelope);
     }
 
-    void StampEnvelope(GameObject env)
+    protected virtual void StampEnvelope(GameObject env)
     {
         Envelope e = env.GetComponent<Envelope>();
         if (e != null && e.needsStampSwap && armsController != null)

@@ -13,23 +13,151 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeLevel
   songClip: {fileID: 0}
-  levelName: The Postoffice
+  levelName: Stamping
   beatsPerMinute: 80
   difficulty: 0
   sequences:
-  - pattern: 02000000020000000200000002000000
-  - pattern: 00000000020000000200000002000000
-  - pattern: 00000000020000000200000002000000
-  - pattern: 00000000020000000200000002000000
-  - pattern: 00000000020000000000000002000000
-  - pattern: 00000000020000000000000002000000
-  - pattern: 00000000000000000000000000000000
-  - pattern: 00000000020000000000000002000000
-  - pattern: 00000000000000000000000000000000
-  - pattern: 00000000020000000100000002000000
-  - pattern: 00000000000000000000000000000000
-  - pattern: 02000000020000000100000002000000
-  - pattern: 00000000020000000000000002000000
-  - pattern: 00000000020000000100000002000000
-  - pattern: 00000000000000000000000000000000
-  - pattern: 01000000020000000100000002000000
+  - pattern:
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 2
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+  - pattern:
+    - first: 3
+      second: 0
+    - first: 3
+      second: 0
+    - first: 2
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 3
+      second: 0
+    - first: 2
+      second: 0
+    - first: 3
+      second: 0
+  - pattern:
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+    - first: 1
+      second: 0
+  - pattern:
+    - first: 2
+      second: 0
+    - first: 3
+      second: 0
+    - first: 2
+      second: 0
+    - first: 3
+      second: 0
