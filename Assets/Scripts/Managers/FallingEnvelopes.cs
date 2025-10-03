@@ -167,18 +167,4 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
             }
         }
     }
-
-    private double GetNoteOffset(NoteType type)
-    {
-        // Full notes spawn at start of beat
-        if (type == NoteType.E4 || type == NoteType.G4 || type == NoteType.C5 || type == NoteType.D5)
-            return 0;
-
-        // Half notes spawn halfway through the beat
-        if (type == NoteType.E4Half || type == NoteType.G4Half ||
-            type == NoteType.C5Half || type == NoteType.D5Half)
-            return 0.5; // half-beat offset
-
-        return 0; // default
-    }
 }
