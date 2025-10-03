@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level1
   m_EditorClassIdentifier: Assembly-CSharp::EnvelopeLevel
   songClip: {fileID: 0}
-  levelName: Stamping
+  levelName: Stamp Champ
   beatsPerMinute: 80
   difficulty: 0
   sequences:
