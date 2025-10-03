@@ -23,12 +23,12 @@ public class EnvelopeConveyor : MonoBehaviour
     public Animator armsAnimator;
     public AudioManager audioManager;
 
-    private Dictionary<NoteType, GameObject> envelopePrefabDict;
-    private List<GameObject> activeEnvelopes = new List<GameObject>();
-    private EnvelopeLevel currentLevelData;
-    private int sequenceIndex = 0;
-    private double songStartDspTime;
-    private float beatInterval;
+    protected Dictionary<NoteType, GameObject> envelopePrefabDict;
+    protected List<GameObject> activeEnvelopes = new List<GameObject>();
+	private EnvelopeLevel currentLevelData;
+    protected int sequenceIndex = 0;
+    protected double songStartDspTime;
+    protected float beatInterval;
     private float moveDuration;
     private bool levelIsPlaying = false;
     private bool countdownHasBeenScheduled = false;
@@ -36,7 +36,7 @@ public class EnvelopeConveyor : MonoBehaviour
     private bool isPaused = false;
     private double pauseStartedTime = 0.0;
     private double totalTimePaused = 0.0;
-    private double CurrentSongTime => isPaused ? pauseStartedTime - totalTimePaused : AudioSettings.dspTime - totalTimePaused;
+    protected double CurrentSongTime => isPaused ? pauseStartedTime - totalTimePaused : AudioSettings.dspTime - totalTimePaused;
 
     void Awake()
     {
@@ -139,14 +139,18 @@ public class EnvelopeConveyor : MonoBehaviour
                 countdownHasBeenScheduled = true; 
             }
 
-            yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
-            SpawnEnvelope(type, autoStamp, spawnTime);
-
-            if (type == NoteType.HalfTap || type == NoteType.HalfTapStamped)
+            if (beat.first != NoteType.None && beat.first != NoteType.SkipOne)
             {
                 double halfSpawnTime = spawnTime + beatInterval / 2f;
                 yield return new WaitUntil(() => CurrentSongTime >= halfSpawnTime);
                 SpawnEnvelope(type, autoStamp, halfSpawnTime);
+            }
+
+            if (beat.second != NoteType.None && beat.second != NoteType.SkipOne)
+            {
+                double halfSpawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i + 0.5) * beatInterval;
+                yield return new WaitUntil(() => CurrentSongTime >= halfSpawnTime);
+                SpawnEnvelope(beat.second, autoStamp, halfSpawnTime);
             }
         }
 
@@ -170,17 +174,21 @@ public class EnvelopeConveyor : MonoBehaviour
 
     protected virtual void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
     {
-        if (envelopePrefabDict.TryGetValue(type, out GameObject prefab))
-        {
-            GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
-            Envelope e = env.GetComponent<Envelope>();
-            e.noteType = type;
-            e.moveDuration = moveDuration;
-            if (autoStamp) e.needsStampSwap = true;
+        if (!envelopePrefabDict.TryGetValue(type, out GameObject prefab))
+            return;
 
-            activeEnvelopes.Add(env);
-            StartCoroutine(MoveEnvelopeAlongConveyor(env, spawnTime));
-        }
+        GameObject env = Instantiate(prefab, envelopePositions[0].position, Quaternion.identity);
+        Envelope e = env.GetComponent<Envelope>();
+        e.noteType = type;
+        e.moveDuration = moveDuration;
+
+        e.isHalfNote = (type == NoteType.E4Half || type == NoteType.G4Half || type == NoteType.C5Half || type == NoteType.D5Half);
+
+        if (autoStamp)
+            e.needsStampSwap = true;
+
+        activeEnvelopes.Add(env);
+        StartCoroutine(MoveEnvelopeAlongConveyor(env, spawnTime));
     }
 
     protected virtual IEnumerator MoveEnvelopeAlongConveyor(GameObject envelope, double spawnTime)
@@ -227,7 +235,7 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
-    public void ProcessSuccessfulAction(GameObject envelope)
+    public virtual void ProcessSuccessfulAction(GameObject envelope)
     {
         if (activeEnvelopes.Contains(envelope))
         {
