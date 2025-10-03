@@ -226,7 +226,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 918610885233975415, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
       propertyPath: m_Name
-      value: LevelButton_PostofficeBoxes
+      value: LevelButton_PostofficeSortSport
       objectReference: {fileID: 0}
     - target: {fileID: 1188534034277768595, guid: c5151bb9bed5f104d8560c35a38138ef, type: 3}
       propertyPath: highScoreText
