@@ -51,6 +51,11 @@ public class LevelSelector : MonoBehaviour
         SceneManager.LoadScene("MainMenuScene");
     }
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     public void ToggleSettingsPanel()
     {
         if (settingsPanel != null)
