@@ -24,7 +24,6 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
     private Dictionary<NoteType, int> noteToLane;
     private AudioSource audioSource;
 
-
     private void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
@@ -123,6 +122,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         yield return new WaitUntil(() => e.isTapped);
 
         // --- Shoot to box ---
+        
         start = envelope.transform.position;
         end = boxPos.position;
         t = 0f;
