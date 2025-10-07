@@ -17,7 +17,7 @@ public class EndGamePanel : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene("PostOfficeLevelsScene");
     }
 
     public void Continue()

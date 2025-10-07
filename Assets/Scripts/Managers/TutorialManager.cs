@@ -8,7 +8,6 @@ public class TutorialManager : MonoBehaviour
     [Header("Game Components")]
     public EnvelopeConveyor envelopeConveyor;
     public ScoreManager scoreManager;
-    public EndGamePanel endGamePanel;
     public TimingManager timingManager;
 
     [Header("Level Settings")]
@@ -36,17 +35,19 @@ public class TutorialManager : MonoBehaviour
 
     private IEnumerator TutorialFlow()
     {
+        instructionText.text = " From now on I'll be your boss, so you better do as I say!";
+        yield return new WaitForSeconds(1.0f);
         while (true)
         {
-            instructionText.text = "Look and <color=#C14520>learn</color> the rhythm...";
+            instructionText.text = "Pay attention and <color=#C14520>learn</color> the rhythm. Focus!";
             timingManager.playerInputEnabled = false;
             yield return new WaitForSeconds(1.0f);
             yield return StartCoroutine(envelopeConveyor.PlayTutorialSequence(tutorialSequence, true, tutorialLevelData.beatsPerMinute));
 
-            instructionText.text = "Get <color=#C14520>ready</color> to tap!";
+            instructionText.text = "Now let's see how you'll do on your own...";
             yield return new WaitForSeconds(1.5f);
 
-            instructionText.text = "Now, <color=#C14520>you</color> try...";
+            instructionText.text = "Seal the envelopes like I showed you just now!";
             scoreManager.ResetAttemptStats();
             timingManager.playerInputEnabled = true;
             yield return StartCoroutine(envelopeConveyor.PlayTutorialSequence(tutorialSequence, false, tutorialLevelData.beatsPerMinute));
@@ -59,13 +60,13 @@ public class TutorialManager : MonoBehaviour
 
             if (misses == 0 && hits >= requiredHits)
             {
-                instructionText.text = "Well done!";
+                instructionText.text = "Ha! Not bad for a slowpoke like you..";
                 yield return new WaitForSeconds(1.5f);
                 break;
             }
             else
             {
-                instructionText.text = "Oops, let's try that again!";
+                instructionText.text = "Wrong! Again!";
                 yield return new WaitForSeconds(2.0f);
             }
         }
