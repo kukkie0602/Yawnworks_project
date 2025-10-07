@@ -31,7 +31,7 @@ public class EnvelopeConveyor : MonoBehaviour
     protected float beatInterval;
     private float moveDuration;
     private bool levelIsPlaying = false;
-    private bool countdownHasBeenScheduled = false;
+    protected bool countdownHasBeenScheduled = false;
 
     private bool isPaused = false;
     private double pauseStartedTime = 0.0;
@@ -159,7 +159,7 @@ public class EnvelopeConveyor : MonoBehaviour
         }
     }
 
-    private IEnumerator ScheduleAnimationTrigger(double triggerDspTime)
+    protected IEnumerator ScheduleAnimationTrigger(double triggerDspTime)
     {
         yield return new WaitUntil(() => AudioSettings.dspTime >= triggerDspTime -1);
 

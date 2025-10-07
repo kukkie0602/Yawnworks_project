@@ -25,7 +25,8 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
     private Dictionary<NoteType, AudioClip> noteSounds;
     private Dictionary<NoteType, int> noteToLane;
     private AudioSource audioSource;
-
+    private const double missWindow = 0.5;
+    public Color missedColor = Color.grey;
     private void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
@@ -85,11 +86,12 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         e.isHalfNote = (type == NoteType.E4Half || type == NoteType.G4Half ||
                         type == NoteType.C5Half || type == NoteType.D5Half);
 
-        double delaySeconds = beatInterval * 4.0;
+        double delaySeconds = beatInterval * 4.0; // 4 beats later
         e.targetDspTime = spawnTime + delaySeconds;
 
         activeEnvelopes.Add(env);
         StartCoroutine(FallToTableAndShoot(env, tablePos, boxPos));
+        StartCoroutine(TimeoutEnvelope(e, env)); // <--- start timeout
     }
 
 
@@ -153,6 +155,14 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
                 yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
                 SpawnEnvelope(beat.first, autoStamp, spawnTime);
             }
+            else
+            {
+                double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
+                double timeToHitZone = beatsToHitZone * beatInterval;
+                double animationTriggerTime = spawnTime + timeToHitZone;
+                StartCoroutine(ScheduleAnimationTrigger(animationTriggerTime));
+                countdownHasBeenScheduled = true;
+            }
 
             // --- Second note (half-beat) ---
             if (beat.second != NoteType.SkipOne && beat.second != NoteType.None)
@@ -161,6 +171,26 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
                 yield return new WaitUntil(() => CurrentSongTime >= spawnTime);
                 SpawnEnvelope(beat.second, autoStamp, spawnTime);
             }
+        }
+    }
+
+    private IEnumerator TimeoutEnvelope(Envelope e, GameObject env)
+    {
+        double waitTime = e.targetDspTime + 0.5 - AudioSettings.dspTime;
+        if (waitTime > 0)
+            yield return new WaitForSecondsRealtime((float)waitTime);
+
+        if (!e.isTapped)
+        {
+            scoreManager?.OnNoteMiss();
+            Debug.Log($"Missed envelope: {e.noteType}");
+
+            e.isTapped = true;
+            e.needsStampSwap = false;
+
+            SpriteRenderer sr = env.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.color = missedColor;
         }
     }
 
@@ -173,7 +203,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
             double timeDifference = Math.Abs(hitTime - e.targetDspTime);
 
             const double perfectWindow = 0.1;
-            const double goodWindow = 0.5;   
+            const double goodWindow = 0.35;   
 
             if (timeDifference <= perfectWindow)
             {
