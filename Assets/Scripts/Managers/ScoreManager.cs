@@ -46,7 +46,7 @@ public class ScoreManager : MonoBehaviour
 
         if (currentLevel != null && currentLevel.levelName == "Tutorial")
             isTutorial = true;
-
+        StreakImage.gameObject.SetActive(false);
         maxScore = CalculateMaxScore();
         ResetScore();
     }
@@ -176,7 +176,7 @@ public class ScoreManager : MonoBehaviour
 
     public int GetCurrentScore() => currentScore;
     public void disableScoreDisplay() { if (scoreText) scoreText.gameObject.SetActive(false); if (StreakImage) StreakImage.gameObject.SetActive(false); }
-    public void enableScoreDisplay() { if (scoreText) scoreText.gameObject.SetActive(true); if (StreakImage) StreakImage.gameObject.SetActive(true); }
+    public void enableScoreDisplay() { if (scoreText) scoreText.gameObject.SetActive(true); if ((StreakImage) && (comboCount > 0)) StreakImage.gameObject.SetActive(true); }
     public void ResetScore() { currentScore = 0; comboCount = 0; totalNotesMissed = 0; totalNotesHit = 0; ResetAttemptStats(); UpdateDisplay(comboCount); }
     public void ResetAttemptStats() { missesThisAttempt = 0; hitsThisAttempt = 0; }
     public int GetMissesThisAttempt() => missesThisAttempt;
@@ -209,7 +209,6 @@ public class ScoreManager : MonoBehaviour
         else
         {
             if (maxScore == 0) return 3;
-
             float scorePercentage = (float)currentScore / maxScore;
             if (scorePercentage >= 1f) return 3;
             else if (scorePercentage >= 0.66f) return 2;

@@ -18,10 +18,17 @@ public class TutorialManager : MonoBehaviour
     public TMP_Text instructionText;
     public Image tutorialImage;
 
+    public Image ScoreImage;
+    public Button BackButton;
+    public Image ComboImage;
+
     private EnvelopeSequence tutorialSequence;
 
     void Start()
     {
+        scoreManager.disableScoreDisplay();
+        ScoreImage.gameObject.SetActive(false);
+        BackButton.gameObject.SetActive(false);
         if (tutorialLevelData == null || tutorialLevelData.sequences.Length == 0)
         {
             Debug.LogError("Tutorial Level Data is not assigned!");
@@ -36,7 +43,7 @@ public class TutorialManager : MonoBehaviour
     private IEnumerator TutorialFlow()
     {
         instructionText.text = " From now on I'll be your boss, so you better do as I say!";
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(4.0f);
         while (true)
         {
             instructionText.text = "Pay attention and <color=#C14520>learn</color> the rhythm. Focus!";
@@ -76,6 +83,9 @@ public class TutorialManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
+        ScoreImage.gameObject.SetActive(true);
+        BackButton.gameObject.SetActive(true);
+        scoreManager.enableScoreDisplay();
         scoreManager.ResetScore();
         envelopeConveyor.StartMainLevel(mainLevelData);
 

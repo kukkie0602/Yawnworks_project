@@ -203,7 +203,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
             double timeDifference = Math.Abs(hitTime - e.targetDspTime);
 
             const double perfectWindow = 0.1;
-            const double goodWindow = 0.35;   
+            const double goodWindow = 0.4;   
 
             if (timeDifference <= perfectWindow)
             {

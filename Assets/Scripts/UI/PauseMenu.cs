@@ -18,16 +18,17 @@ public class PauseMenu : MonoBehaviour
     public AudioSource musicSource;
 
     private bool isPaused = false;
-    private SettingsData settingsData;
+
+    void OnEnable()
+    {
+        LoadVolume();
+    }
 
     void Start()
     {
-        settingsData = SaveSystem.LoadSettings();
-
-        mainMixer.SetFloat("MusicVolume", Mathf.Log10(settingsData.musicVolume) * 20);
         if (volumeSlider != null)
         {
-            volumeSlider.value = settingsData.musicVolume;
+            volumeSlider.onValueChanged.AddListener(SetMusicVolume);
         }
     }
 
@@ -57,6 +58,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ResumeGame()
     {
+        SaveVolume();
         isPaused = false;
         pauseMenuPanel.SetActive(false);
         if (scoreManager.scoreDisplayEnabled)
@@ -70,22 +72,42 @@ public class PauseMenu : MonoBehaviour
         envelopeConveyor.Resume();
     }
 
-    public void SetVolume(float volume)
+    public void SetMusicVolume(float volume)
     {
         mainMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
-        settingsData.musicVolume = volume;
-        SaveSystem.SaveSettings(settingsData);
+    }
+
+    public void SaveVolume()
+    {
+        if (volumeSlider != null)
+        {
+            SettingsData data = new SettingsData();
+            data.musicVolume = volumeSlider.value;
+            SaveSystem.SaveSettings(data);
+        }
+    }
+
+    public void LoadVolume()
+    {
+        SettingsData data = SaveSystem.LoadSettings();
+        if (data != null && volumeSlider != null)
+        {
+            volumeSlider.value = data.musicVolume;
+            SetMusicVolume(data.musicVolume);
+        }
     }
 
     public void RetryLevel()
     {
+        SaveVolume();
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void QuitToMainMenu()
     {
+        SaveVolume();
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.LoadScene("PostOfficeLevelsScene");
     }
 }

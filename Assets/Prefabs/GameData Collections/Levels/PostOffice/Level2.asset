@@ -15,7 +15,7 @@ MonoBehaviour:
   songClip: {fileID: 0}
   levelName: Sort Sport
   beatsPerMinute: 100
-  difficulty: 0
+  difficulty: 1
   sequences:
   - pattern:
     - first: 0

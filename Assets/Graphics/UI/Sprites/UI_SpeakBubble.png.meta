@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2a3e0ed3297727644a902b49e8aa6b03
+guid: 32b0a437039cfad459f8c3cde428c804
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6153058360166528408
-    second: walrus_portrait_0
+      213: 613098523021842017
+    second: UI_SpeakBubble_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: walrus_portrait_0
+      name: UI_SpeakBubble_0
       rect:
         serializedVersion: 2
-        x: 196
-        y: 462
-        width: 483
-        height: 345
+        x: 0
+        y: 0
+        width: 381
+        height: 94
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 89539ff6afd046550800000000000000
-      internalID: 6153058360166528408
+      spriteID: 166980dbbd9228800800000000000000
+      internalID: 613098523021842017
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: be09554aa09aa0247abb8dbbd8c1bb41
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      walrus_portrait_0: 6153058360166528408
+      UI_SpeakBubble_0: 613098523021842017
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

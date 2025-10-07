@@ -1,6 +1,7 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class MenuAudioManager : MonoBehaviour
 {
@@ -13,16 +14,24 @@ public class MenuAudioManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); 
+            Destroy(gameObject);
+        }
+    }
+    void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
         }
     }
 
     void Start()
     {
+        LoadVolume();
         if (!menuMusicSource.isPlaying)
         {
             menuMusicSource.loop = true;
@@ -46,5 +55,11 @@ public class MenuAudioManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public void LoadVolume()
+    {
+        SettingsData data = SaveSystem.LoadSettings();
+        menuMusicSource.outputAudioMixerGroup.audioMixer.SetFloat("MusicVolume", Mathf.Log10(data.musicVolume) * 20);
     }
 }
