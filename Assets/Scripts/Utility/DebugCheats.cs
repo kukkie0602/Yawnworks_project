@@ -12,7 +12,6 @@ public class DebugCheats : MonoBehaviour
     {
         HighScoresData highScores = SaveSystem.LoadHighScores();
 
-        bool saveFileModified = false;
         foreach (EnvelopeLevel level in allGameLevels)
         {
             if (!highScores.levelNames.Contains(level.name))
@@ -20,7 +19,6 @@ public class DebugCheats : MonoBehaviour
                 highScores.levelNames.Add(level.name);
                 highScores.scores.Add(0);
                 highScores.coins.Add(0);
-                saveFileModified = true;
             }
         }
 
