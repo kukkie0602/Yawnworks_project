@@ -26,5 +26,4 @@ public class StampTriggerZone : MonoBehaviour
             env.needsStampSwap = false;
         }
     }
-
 }

@@ -27,7 +27,7 @@ public class TimingManager : MonoBehaviour
     public Animator stampeffectanimator;
 
     private List<Envelope> activeEnvelopesInZone = new List<Envelope>();
-
+    public bool isLevel2 = false;
     public void ResetManager()
     {
         activeEnvelopesInZone.Clear();
@@ -36,6 +36,7 @@ public class TimingManager : MonoBehaviour
 
     void Update()
     {
+        if (isLevel2) return;
         if (playerInputEnabled && Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             if (activeEnvelopesInZone.Count > 0)

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FallingEnvelopeLevel : EnvelopeConveyor
 {
@@ -13,7 +14,8 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
     public float fallDuration = 1f;
     public float shootDuration = 0.5f;
     public float tapRadius = 0.5f;
-
+    [Header("Scoring")]
+    public ScoreManager scoreManager;
     [Header("Note Sounds")]
     public AudioClip e4Sound;
     public AudioClip g4Sound;
@@ -27,8 +29,10 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
     private void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
-
-        // Map musical note types to sounds
+        if (timingManager != null)
+        {
+            timingManager.isLevel2 = true; 
+        }
         noteSounds = new Dictionary<NoteType, AudioClip>()
         {
             { NoteType.E4, e4Sound },
@@ -71,12 +75,6 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         }
 
         Transform spawnPoint = spawnPoints[laneIndex];
-
-        if (spawnPoint == null)
-        {
-            Debug.LogError($"Spawn point at index {laneIndex} is not assigned!");
-            return; 
-        }
         Transform tablePos = tablePositions[laneIndex];
         Transform boxPos = boxPositions[laneIndex];
 
@@ -84,12 +82,13 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         Envelope e = env.GetComponent<Envelope>();
         e.noteType = type;
 
-        // Determine if the envelope should fall faster (half-note)
         e.isHalfNote = (type == NoteType.E4Half || type == NoteType.G4Half ||
                         type == NoteType.C5Half || type == NoteType.D5Half);
 
-        activeEnvelopes.Add(env);
+        double delaySeconds = beatInterval * 4.0;
+        e.targetDspTime = spawnTime + delaySeconds;
 
+        activeEnvelopes.Add(env);
         StartCoroutine(FallToTableAndShoot(env, tablePos, boxPos));
     }
 
@@ -165,16 +164,36 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         }
     }
 
-    // Connect Level 1 hit detection to shooting
     public override void ProcessSuccessfulAction(GameObject envelope)
     {
         Envelope e = envelope.GetComponent<Envelope>();
         if (e != null)
         {
-            e.isTapped = true; // signal coroutine to shoot
+            double hitTime = AudioSettings.dspTime;
+            double timeDifference = Math.Abs(hitTime - e.targetDspTime);
+
+            const double perfectWindow = 0.1;
+            const double goodWindow = 0.5;   
+
+            if (timeDifference <= perfectWindow)
+            {
+                scoreManager?.OnNoteHit();
+                Debug.Log($"Perfect hit! ={timeDifference:F3}s");
+            }
+            else if (timeDifference <= goodWindow)
+            {
+                scoreManager?.OnNoteHit();
+                Debug.Log($"Good hit! ={timeDifference:F3}s");
+            }
+            else
+            {
+                scoreManager?.OnNoteMiss();
+                Debug.Log($"Miss! ={timeDifference:F3}s");
+            }
+
+            e.isTapped = true;
             StampEnvelope(envelope);
 
-            // Play sound only if note type has an assigned clip
             if (noteSounds.TryGetValue(e.noteType, out AudioClip clip) && clip != null)
             {
                 audioSource.PlayOneShot(clip);
