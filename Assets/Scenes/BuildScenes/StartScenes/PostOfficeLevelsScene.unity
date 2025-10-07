@@ -798,8 +798,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuAudioManager
   menuMusicSource: {fileID: 836554195}
   gameLevelSceneNames:
-  - Level1GameScene
   - Level2GameScene
+  - Level1GameScene
 --- !u!82 &836554195
 AudioSource:
   m_ObjectHideFlags: 0
