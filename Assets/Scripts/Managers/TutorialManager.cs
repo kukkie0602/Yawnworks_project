@@ -26,6 +26,7 @@ public class TutorialManager : MonoBehaviour
 
     void Start()
     {
+        timingManager.playerInputEnabled = false;
         scoreManager.disableScoreDisplay();
         ScoreImage.gameObject.SetActive(false);
         BackButton.gameObject.SetActive(false);

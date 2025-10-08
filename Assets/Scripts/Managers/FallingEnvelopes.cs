@@ -102,37 +102,44 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         Envelope e = envelope.GetComponent<Envelope>();
         if (e == null) yield break;
 
+        // --- Fall to table, driven by CurrentSongTime ---
+        Vector3 startPos = envelope.transform.position;
+        Vector3 endPos = tablePos.position;
+
+        double fallStartTime = CurrentSongTime;
         float duration = e.isHalfNote ? fallDuration / 2f : fallDuration;
+        double fallEndTime = fallStartTime + duration;
 
-        // --- Fall to table ---
-        Vector3 start = envelope.transform.position;
-        Vector3 end = tablePos.position;
-        float t = 0f;
-
-        while (t < 1f)
+        while (CurrentSongTime < fallEndTime)
         {
             if (envelope == null) yield break;
-            t += Time.deltaTime / duration;
-            envelope.transform.position = Vector3.Lerp(start, end, t);
+
+            double timeElapsed = CurrentSongTime - fallStartTime;
+            float t = (float)(timeElapsed / duration);
+            envelope.transform.position = Vector3.Lerp(startPos, endPos, t);
             yield return null;
         }
 
-        envelope.transform.position = end;
+        if (envelope == null) yield break;
+        envelope.transform.position = endPos;
 
-        // --- Wait for tap or successful action ---
         yield return new WaitUntil(() => e.isTapped);
+        if (envelope == null) yield break;
 
-        // --- Shoot to box ---
-        
-        start = envelope.transform.position;
-        end = boxPos.position;
-        t = 0f;
+        // --- Shoot to box, driven by CurrentSongTime ---
+        startPos = envelope.transform.position;
+        endPos = boxPos.position;
 
-        while (t < 1f)
+        double shootStartTime = CurrentSongTime;
+        double shootEndTime = shootStartTime + shootDuration;
+
+        while (CurrentSongTime < shootEndTime)
         {
             if (envelope == null) yield break;
-            t += Time.deltaTime / shootDuration;
-            envelope.transform.position = Vector3.Lerp(start, end, t);
+
+            double timeElapsed = CurrentSongTime - shootStartTime;
+            float t = (float)(timeElapsed / shootDuration);
+            envelope.transform.position = Vector3.Lerp(startPos, endPos, t);
             yield return null;
         }
 
@@ -176,11 +183,10 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
 
     private IEnumerator TimeoutEnvelope(Envelope e, GameObject env)
     {
-        double waitTime = e.targetDspTime + 0.5 - AudioSettings.dspTime;
-        if (waitTime > 0)
-            yield return new WaitForSecondsRealtime((float)waitTime);
+        double missTime = e.targetDspTime + missWindow;
+        yield return new WaitUntil(() => CurrentSongTime >= missTime);
 
-        if (!e.isTapped)
+        if (e != null && !e.isTapped && env != null)
         {
             scoreManager?.OnNoteMiss();
             Debug.Log($"Missed envelope: {e.noteType}");
@@ -199,11 +205,11 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         Envelope e = envelope.GetComponent<Envelope>();
         if (e != null)
         {
-            double hitTime = AudioSettings.dspTime;
+            double hitTime = CurrentSongTime;
             double timeDifference = Math.Abs(hitTime - e.targetDspTime);
 
             const double perfectWindow = 0.1;
-            const double goodWindow = 0.4;   
+            const double goodWindow = 0.4;
 
             if (timeDifference <= perfectWindow)
             {
