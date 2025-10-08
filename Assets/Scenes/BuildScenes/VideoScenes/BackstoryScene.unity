@@ -509,6 +509,7 @@ GameObject:
   - component: {fileID: 1332990309}
   - component: {fileID: 1332990308}
   - component: {fileID: 1332990310}
+  - component: {fileID: 1332990311}
   m_Layer: 0
   m_Name: VideoManager
   m_TagString: Untagged
@@ -540,7 +541,7 @@ VideoPlayer:
   m_AudioOutputMode: 2
   m_TargetAudioSources: []
   m_DirectAudioVolumes: []
-  m_Url: 
+  m_Url: https://drive.google.com/file/d/1NJc0YJTXMw8oCUts6JAGB83Ifs0ULtUD/view?usp=sharing
   m_EnabledAudioTracks: 
   m_DirectAudioMutes: 
   m_ControlledAudioTrackCount: 0
@@ -580,6 +581,19 @@ MonoBehaviour:
   videoPlayer: {fileID: 1332990308}
   nextSceneName: LevelSelectScene
   skipButton: {fileID: 1955149236}
+--- !u!114 &1332990311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332990306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeba880245eb6de438bb637d63bb4250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WebGLVideoPlayer
+  videoFileName: story_intoduction_headphones.mp4
 --- !u!1 &1337704091
 GameObject:
   m_ObjectHideFlags: 0

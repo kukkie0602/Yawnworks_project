@@ -414,6 +414,7 @@ GameObject:
   - component: {fileID: 862327010}
   - component: {fileID: 862327009}
   - component: {fileID: 862327011}
+  - component: {fileID: 862327012}
   m_Layer: 0
   m_Name: VideoManager
   m_TagString: Untagged
@@ -445,7 +446,7 @@ VideoPlayer:
   m_AudioOutputMode: 2
   m_TargetAudioSources: []
   m_DirectAudioVolumes: []
-  m_Url: 
+  m_Url: https://drive.google.com/file/d/1DtzXUbi_AK025TYMwm6WIIyoEVeNhnCJ/view?usp=sharing
   m_EnabledAudioTracks: 
   m_DirectAudioMutes: 
   m_ControlledAudioTrackCount: 0
@@ -485,6 +486,19 @@ MonoBehaviour:
   videoPlayer: {fileID: 862327009}
   blackCover: {fileID: 384503579}
   nextSceneName: MainMenuScene
+--- !u!114 &862327012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 862327008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eeba880245eb6de438bb637d63bb4250, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WebGLVideoPlayer
+  videoFileName: YawnWorks_Title_StudioName.mp4
 --- !u!1 &1331783465
 GameObject:
   m_ObjectHideFlags: 0
