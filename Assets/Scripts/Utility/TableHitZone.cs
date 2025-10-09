@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 public class TableHitZone : MonoBehaviour
 {
-    public FallingEnvelopeLevel levelManager; // reference to the level manager
-    public int laneIndex; // which lane this hitbox is
-    public float tapRadius = 1f; // radius for tap detection
+    public FallingEnvelopeLevel levelManager;
+    public int laneIndex;
+    public float tapRadius = 1f; 
 
     private HashSet<Envelope> envelopesInZone = new HashSet<Envelope>();
 
@@ -31,7 +31,6 @@ public class TableHitZone : MonoBehaviour
     {
         if (envelopesInZone.Count == 0) return;
 
-        // --- Mouse Input ---
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -45,13 +44,12 @@ public class TableHitZone : MonoBehaviour
                     if (col != null && col.OverlapPoint(mousePos))
                     {
                         levelManager.ProcessSuccessfulAction(e.gameObject);
-                        break; // only tap one envelope per click
+                        break;
                     }
                 }
             }
         }
 
-        // --- Touch Input ---
         foreach (Touch touch in Input.touches)
         {
             if (touch.phase != TouchPhase.Began) continue;
@@ -67,7 +65,7 @@ public class TableHitZone : MonoBehaviour
                     if (col != null && col.OverlapPoint(touchPos))
                     {
                         levelManager.ProcessSuccessfulAction(e.gameObject);
-                        break; // only tap one envelope per touch
+                        break;
                     }
                 }
             }

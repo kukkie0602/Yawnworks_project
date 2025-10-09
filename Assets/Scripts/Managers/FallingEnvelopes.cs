@@ -42,13 +42,12 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
             { NoteType.D5, d5Sound }
         };
 
-        // Map musical note types to lanes (left-to-right)
         noteToLane = new Dictionary<NoteType, int>()
         {
-            { NoteType.E4, 0 }, // leftmost lane
+            { NoteType.E4, 0 }, 
             { NoteType.G4, 1 },
             { NoteType.C5, 2 },
-            { NoteType.D5, 3 },  // rightmost lane
+            { NoteType.D5, 3 }, 
 
             { NoteType.E4Half, 0 },
             { NoteType.G4Half, 1 },
@@ -63,8 +62,7 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         StartMainLevel(currentLevelData);
     }
 
-    // Override spawn to spawn at the correct lane for the note
-    protected void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
+    protected override void SpawnEnvelope(NoteType type, bool autoStamp, double spawnTime)
     {
         if (!envelopePrefabDict.TryGetValue(type, out GameObject prefab))
             return;
@@ -86,23 +84,20 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         e.isHalfNote = (type == NoteType.E4Half || type == NoteType.G4Half ||
                         type == NoteType.C5Half || type == NoteType.D5Half);
 
-        double delaySeconds = beatInterval * 4.0; // 4 beats later
+        double delaySeconds = beatInterval * 4.0;
         e.targetDspTime = spawnTime + delaySeconds;
 
         activeEnvelopes.Add(env);
         StartCoroutine(FallToTableAndShoot(env, tablePos, boxPos));
-        StartCoroutine(TimeoutEnvelope(e, env)); // <--- start timeout
+        StartCoroutine(TimeoutEnvelope(e, env));
     }
 
-
-    // Movement and tap/shoot logic
     private IEnumerator FallToTableAndShoot(GameObject envelope, Transform tablePos, Transform boxPos)
     {
         if (envelope == null) yield break;
         Envelope e = envelope.GetComponent<Envelope>();
         if (e == null) yield break;
 
-        // --- Fall to table, driven by CurrentSongTime ---
         Vector3 startPos = envelope.transform.position;
         Vector3 endPos = tablePos.position;
 
@@ -126,7 +121,6 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         yield return new WaitUntil(() => e.isTapped);
         if (envelope == null) yield break;
 
-        // --- Shoot to box, driven by CurrentSongTime ---
         startPos = envelope.transform.position;
         endPos = boxPos.position;
 
@@ -155,7 +149,6 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
         {
             EnvelopeSequence.Beat beat = seq.pattern[i];
 
-            // --- First note ---
             if (beat.first != NoteType.SkipOne && beat.first != NoteType.None)
             {
                 double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i) * beatInterval;
@@ -171,7 +164,6 @@ public class FallingEnvelopeLevel : EnvelopeConveyor
                 countdownHasBeenScheduled = true;
             }
 
-            // --- Second note (half-beat) ---
             if (beat.second != NoteType.SkipOne && beat.second != NoteType.None)
             {
                 double spawnTime = songStartDspTime + (sequenceIndex * seq.pattern.Length + i + 0.5) * beatInterval;

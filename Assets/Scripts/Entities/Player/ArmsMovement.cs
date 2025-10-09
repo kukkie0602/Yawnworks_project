@@ -9,10 +9,8 @@ public class ArmsController : MonoBehaviour
     {
         if (armsAnimator != null)
         {
-            // Set animation speed
             armsAnimator.SetFloat("StampSpeed", speedMultiplier * 1f);
 
-            // Force the animation to restart from the beginning
             armsAnimator.Play(armsAnimationStateName, 0, 0f);
         }
     }

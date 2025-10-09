@@ -11,6 +11,6 @@ public class EnvelopeSequence
     {
         [Tooltip("If only one note, second can remain None or SkipOne.")]
         public NoteType first;
-        public NoteType second; // optional, use None/SkipOne if unused
+        public NoteType second;
     }
 }
