@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: ce4241c6547250348b0b76baf5a813d5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4863227699599435435
+    second: UI_ProgressBar002_0
+  - first:
+      213: 7464682170873337453
+    second: UI_ProgressBar002_1
+  - first:
+      213: -8726014349851353311
+    second: UI_ProgressBar002_2
+  - first:
+      213: 5718675740526382349
+    second: UI_ProgressBar002_3
+  - first:
+      213: 6289466646942307440
+    second: UI_ProgressBar002_4
+  - first:
+      213: -8811895784667153988
+    second: UI_ProgressBar002_5
+  - first:
+      213: -9187963499437287988
+    second: UI_ProgressBar002_6
+  - first:
+      213: -4561820869365275275
+    second: UI_ProgressBar002_7
+  - first:
+      213: 6701769842252266294
+    second: UI_ProgressBar002_8
+  - first:
+      213: 1822306539384451799
+    second: UI_ProgressBar002_9
+  - first:
+      213: 6479092364818896038
+    second: UI_ProgressBar002_10
+  - first:
+      213: 5418996760497307965
+    second: UI_ProgressBar002_11
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: UI_ProgressBar002_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 777
+        height: 253
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55919877c28528cb0800000000000000
+      internalID: -4863227699599435435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_1
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 189
+        width: 29
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d66d81482e0e79760800000000000000
+      internalID: 7464682170873337453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_2
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 95
+        width: 561
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12f16246e28f6e680800000000000000
+      internalID: -8726014349851353311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_3
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 84
+        width: 6
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0d08b38941dc5f40800000000000000
+      internalID: 5718675740526382349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_4
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 92
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 074d9a5a79ca84750800000000000000
+      internalID: 6289466646942307440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_5
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 91
+        width: 6
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb9f625a87bd5b580800000000000000
+      internalID: -8811895784667153988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_6
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 29
+        width: 91
+        height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc519ce80ebcd7080800000000000000
+      internalID: -9187963499437287988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_7
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 94
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 575e480c61821b0c0800000000000000
+      internalID: -4561820869365275275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_8
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 96
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63b3fddf928710d50800000000000000
+      internalID: 6701769842252266294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_9
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 95
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d2b1ef74222a4910800000000000000
+      internalID: 1822306539384451799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_10
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 95
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a4d9f79d2c5ae950800000000000000
+      internalID: 6479092364818896038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_ProgressBar002_11
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 23
+        width: 72
+        height: 57
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d314f64b7d4243b40800000000000000
+      internalID: 5418996760497307965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2a6c2760b2a06764dab261bcc74b12dd
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      UI_ProgressBar002_0: -4863227699599435435
+      UI_ProgressBar002_1: 7464682170873337453
+      UI_ProgressBar002_10: 6479092364818896038
+      UI_ProgressBar002_11: 5418996760497307965
+      UI_ProgressBar002_2: -8726014349851353311
+      UI_ProgressBar002_3: 5718675740526382349
+      UI_ProgressBar002_4: 6289466646942307440
+      UI_ProgressBar002_5: -8811895784667153988
+      UI_ProgressBar002_6: -9187963499437287988
+      UI_ProgressBar002_7: -4561820869365275275
+      UI_ProgressBar002_8: 6701769842252266294
+      UI_ProgressBar002_9: 1822306539384451799
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -13,33 +13,44 @@ public class LevelSelector : MonoBehaviour
     [Tooltip("The Text element to display the total coins")]
     public TMP_Text totalCoinsText;
 
+    [Header("Progress Bar")]
+    public ProgressBarManager progressBar;
+
     void Start()
     {
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
         }
+        int testCoins = 2;
+        if (progressBar != null)
+        {
+            progressBar.playerCoins = testCoins;
+            progressBar.UpdateProgressBar();
+        }
         UpdateTotalCoinsDisplay();
     }
     private void UpdateTotalCoinsDisplay()
     {
-        if (totalCoinsText == null)
-        {
-            Debug.LogWarning("Total Coins Text is not assigned in the inspector!");
-            return;
-        }
-
         HighScoresData highScores = SaveSystem.LoadHighScores();
+        int totalCoins = 0;
+
         if (highScores != null)
         {
-            int totalCoins = highScores.coins.Sum();
-            totalCoinsText.text = totalCoins.ToString();
+            totalCoins = highScores.coins.Sum();
+        }
+
+        if (progressBar != null)
+        {
+            progressBar.playerCoins = totalCoins+2;
+            progressBar.UpdateProgressBar();
         }
         else
         {
-            totalCoinsText.text = "0";
+            Debug.LogWarning("ProgressBar reference not assigned in the inspector!");
         }
     }
+
 
     public void SelectLevel(string sceneName)
     {

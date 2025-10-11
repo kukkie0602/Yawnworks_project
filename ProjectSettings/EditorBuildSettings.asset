@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BuildScenes/PostOfficeScenes/Level2GameScene.unity
     guid: 27074fd3523a68c41a1fca722a7741cf
+  - enabled: 1
+    path: Assets/Scenes/BuildScenes/EndScreen/EndScreen.unity
+    guid: 97943827d9bbcb0439f9a730a40471c9
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 14dfcd557463c1b438b6eb9ae37b02be, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 3cb70c2dd94b8cc41a72f16c89420f90, type: 2}
