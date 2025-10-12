@@ -9,6 +9,7 @@ public class ProgressBarManager : MonoBehaviour
 
     [Header("Popup Settings")]
     public GameObject maxCoinsPopup;
+
     private bool popupShown = false;
 
     private Image progressBarImage;
@@ -21,12 +22,13 @@ public class ProgressBarManager : MonoBehaviour
 
     public void UpdateProgressBar()
     {
+        Debug.Log("update");
         if (progressBarSprites.Length == 0 || progressBarImage == null) return;
 
         int stage = Mathf.Clamp(playerCoins, 0, progressBarSprites.Length - 1);
         progressBarImage.sprite = progressBarSprites[stage];
 
-        if (playerCoins >= 6 && !popupShown)
+        if ((playerCoins >= 6 && !popupShown) && (maxCoinsPopup != null))
         {
             ShowMaxCoinsPopup();
             popupShown = true;

@@ -22,27 +22,27 @@ public class LevelSelector : MonoBehaviour
         {
             settingsPanel.SetActive(false);
         }
-        int testCoins = 2;
         if (progressBar != null)
         {
-            progressBar.playerCoins = testCoins;
             progressBar.UpdateProgressBar();
         }
         UpdateTotalCoinsDisplay();
     }
-    private void UpdateTotalCoinsDisplay()
+    public void UpdateTotalCoinsDisplay()
     {
         HighScoresData highScores = SaveSystem.LoadHighScores();
         int totalCoins = 0;
 
         if (highScores != null)
         {
+            Debug.Log("update");
             totalCoins = highScores.coins.Sum();
         }
 
         if (progressBar != null)
         {
-            progressBar.playerCoins = totalCoins+2;
+            Debug.Log("update progress");
+            progressBar.playerCoins = totalCoins;
             progressBar.UpdateProgressBar();
         }
         else

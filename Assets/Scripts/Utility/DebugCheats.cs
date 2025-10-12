@@ -6,6 +6,7 @@ public class DebugCheats : MonoBehaviour
     private const int MAX_SCORE_VALUE = 999999;
     private const int MAX_COIN_VALUE = 3;
 
+    public LevelSelector updater;
     public List<EnvelopeLevel> allGameLevels;
 
     public void MaxOutAllScoresAndCoins()
@@ -33,5 +34,6 @@ public class DebugCheats : MonoBehaviour
         }
 
         SaveSystem.SaveHighScores(highScores);
+        updater.UpdateTotalCoinsDisplay();
     }
 }
